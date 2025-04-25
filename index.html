@@ -814,22 +814,22 @@
     
     // Laden der gespeicherten Punkte aus dem localStorage beim Start  
     function loadSavedPoints() {  
-      // Reguläre Punkte laden  
-      const elephantsTotalPoints = parseInt(localStorage.getItem('elephantsTotal') || '0');  
-const elephantsAvailablePoints = parseInt(localStorage.getItem('elephantsAvailable') || '0'); 
-      
-      // Elefanten-Punkte laden  
-      const elephantsTotalPoints = parseInt(localStorage.getItem('elephant_totalPoints') || '0');  
-  const elephantsAvailablePoints = parseInt(localStorage.getItem('elephant_availablePoints') || '0');    
-      
-      // Die höheren Punkte verwenden (entweder reguläre oder Elefanten-Punkte)  
-      totalPoints = Math.max(savedTotalPoints, elephantsTotalPoints);  
-      availablePoints = Math.max(savedAvailablePoints, elephantsAvailablePoints);  
-      
-      // Punkte aktualisieren  
-      updatePoints();
-       console.log("Gespeicherte Punkte geladen:", totalPoints, availablePoints);
-    }  
+  // Reguläre Punkte laden  
+  const savedTotalPoints = parseInt(localStorage.getItem('totalPoints') || '0');  
+  const savedAvailablePoints = parseInt(localStorage.getItem('availablePoints') || '0');  
+  
+  // Elefanten-Punkte laden  
+  const elephantsTotalPoints = parseInt(localStorage.getItem('elephantsTotal') || '0');  
+  const elephantsAvailablePoints = parseInt(localStorage.getItem('elephantsAvailable') || '0');  
+  
+  // Die höheren Punkte verwenden (entweder reguläre oder Elefanten-Punkte)  
+  totalPoints = Math.max(savedTotalPoints, elephantsTotalPoints);  
+  availablePoints = Math.max(savedAvailablePoints, elephantsAvailablePoints);  
+  
+  // Punkte aktualisieren  
+  updatePoints();  
+  console.log("Gespeicherte Punkte geladen:", totalPoints, availablePoints);  
+}
     
    // Funktion zum Aktualisieren der Punkte von elephants.html  
 function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {  
