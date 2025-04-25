@@ -5,6 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">  
   <title>TARDIS Quest Tracker - Elefantensammlung</title>  
   <style>  
+    .reset-container {  
+  display: flex;  
+  justify-content: flex-end;  
+  margin-bottom: 15px;  
+}  
+
+.reset-button {  
+  background-color: #d9534f;  
+  color: white;  
+  border: none;  
+  padding: 8px 12px;  
+  border-radius: 4px;  
+  cursor: pointer;  
+  display: flex;  
+  align-items: center;  
+  font-size: 14px;  
+  transition: background-color 0.2s;  
+}  
+
+.reset-button:hover {  
+  background-color: #c9302c;  
+}  
+
+.reset-icon {  
+  margin-right: 8px;  
+}
     :root {  
       --tardis-blue: #003b6f;  
       --tardis-dark-blue: #00254a;  
@@ -583,7 +609,13 @@
         </div>  
       </div>  
     </div>  
-
+<!-- Reset-Button -->  
+<div class="reset-container">  
+  <button id="resetCollection" class="reset-button">  
+    <span class="reset-icon">🔄</span> Sammlung zurücksetzen  
+  </button>  
+</div>  
+    
     <div class="tabs">  
       <a href="index.html" class="tab">  
         <span class="tab-icon">🏠</span>Hauptseite  
@@ -1022,6 +1054,42 @@
         }  
       };  
     };  
+      
+  // Reset-Funktion  
+  document.getElementById('resetCollection').addEventListener('click', function() {  
+    if (confirm("Möchtest du wirklich deine gesamte Elefantensammlung zurücksetzen? Alle entdeckten Elefanten und Punkte gehen verloren!")) {  
+      // Elefanten zurücksetzen  
+      elephantsData.forEach(elephant => {  
+        elephant.discovered = false;  
+      });  
+      
+      // Sets zurücksetzen  
+      elephantSets.forEach(set => {  
+        set.completed = false;  
+      });  
+      
+      // Punkte zurücksetzen  
+      totalPoints = 0;  
+      availablePoints = 0;  
+      
+      // Speichern der Änderungen  
+      saveState();  
+      
+      // UI aktualisieren  
+      initializeElephantCards();  
+      
+      // Hauptseite aktualisieren  
+      try {  
+        if (window.parent && window.parent.updatePointsFromElephants) {  
+          window.parent.updatePointsFromElephants(0, 0);  
+        }  
+      } catch (e) {  
+        console.log("Could not update parent window.");  
+      }  
+      
+      alert("Deine Elefantensammlung wurde erfolgreich zurückgesetzt.");  
+    }  
+  });
   </script>  
 </body>  
 </html>
