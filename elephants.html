@@ -1098,6 +1098,24 @@
       alert("Deine Elefantensammlung wurde erfolgreich zurückgesetzt.");  
     }  
   });
+    // Funktion zum Synchronisieren der Punkte beim Laden der Seite  
+function syncPoints() {  
+  // Speichere die aktuellen Punkte mit eindeutigen Namen  
+  localStorage.setItem('elephant_totalPoints', totalPoints);  
+  localStorage.setItem('elephant_availablePoints', availablePoints);  
+  
+  // Versuche die Hauptseite zu aktualisieren  
+  try {  
+    if (window.parent && window.parent.updatePointsFromElephants) {  
+      window.parent.updatePointsFromElephants(totalPoints, availablePoints);  
+    }  
+  } catch (e) {  
+    console.log("Konnte Elternelement nicht aktualisieren:", e);  
+  }  
+}  
+
+// Beim Laden der Seite die Punkte synchronisieren  
+document.addEventListener('DOMContentLoaded', syncPoints);  
   </script>  
 </body>  
 </html>
