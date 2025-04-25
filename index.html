@@ -996,60 +996,57 @@
     
     // Functions  
     function renderRewards() {  
-      // Group rewards by category  
-      const categories = ["25", "50", "75", "100", "150", "200", "250", "300", "milestone"];  
+  // Group rewards by category  
+  const categories = ["25", "50", "75", "100", "150", "200", "250", "300", "milestone"];  
+  
+  categories.forEach(category => {  
+    const container = document.getElementById(`rewards-${category}`);  
+    if (!container) return;  
+    
+    // Clear container  
+    container.innerHTML = '';  
+    
+    // Get rewards for this category  
+    const categoryRewards = rewardsData.filter(reward => reward.category === category);  
+    
+    // Sort by points  
+    categoryRewards.sort((a, b) => a.points - b.points);  
+    
+    // Render rewards  
+    categoryRewards.forEach(reward => {  
+      let isDisabled = category !== "milestone" && availablePoints < reward.points;  
       
-      categories.forEach(category => {  
-        const container = document.getElementById(`rewards-${category}`);  
-        if (!container) return;  
+      // Überprüfen, ob Meilenstein erreicht wurde (für Meilenstein-Belohnungen)  
+      let isMilestoneAvailable = true;  
+      if (category === "milestone") {  
+        const milestone = milestoneData.find(m => m.name === reward.milestone);  
+        isMilestoneAvailable = milestone && milestone.reached;  
         
-        // Clear container  
-        container.innerHTML = '';  
-        
-        // Get rewards for this category  
-        const categoryRewards = rewardsData.filter(reward => reward.category === category);  
-        
-        // Sort by points  
-        categoryRewards.sort((a, b) => a.points - b.points);  
-        
-        // Render rewards  
-        categoryRewards.forEach(reward => {  
-          const isDisabled = category !== "milestone" && availablePoints < reward.points;  
-          
-          // Überprüfen, ob Meilenstein erreicht wurde (nur für Meilenstein-Belohnungen)  
-          let isMilestoneAvailable = true;  
-          if (category === "milestone") {  
-            const milestone = milestoneData.find(m => m.name === reward.milestone);  
-            isMilestoneAvailable = milestone && milestone.reached;  
-            
-            // Wenn Meilenstein nicht erreicht wurde, Belohnung ausblenden  
-            if (!isMilestoneAvailable) {  
-              return; // Diese Belohnung überspringen  
-            }  
-          }  
-          
-          const rewardElement = document.createElement('div');  
-          rewardElement.className = `reward-item ${isDisabled ? 'disabled' : ''}`;  
-          if (category === "milestone") {  
-            rewardElement.className += ' milestone-reward';  
-          }  
-          
-          if (!isDisabled && isMilestoneAvailable) {  
-            rewardElement.onclick = () => showConfirmation(reward);  
-          }  
-          
-          rewardElement.innerHTML = `  
-            <div class="reward-header">  
-              <h4 class="reward-title">${reward.name}</h4>  
-              <span class="reward-points">${category === "milestone" ? reward.milestone : reward.points + " Punkte"}</span>  
-            </div>  
-            <p class="reward-description">${reward.description}</p>  
-          `;  
-          
-          container.appendChild(rewardElement);  
-        });  
-      });  
-    }  
+        // Wenn Meilenstein nicht erreicht, als deaktiviert markieren  
+        if (!isMilestoneAvailable) {  
+          isDisabled = true;  
+        }  
+      }  
+      
+      const rewardElement = document.createElement('div');  
+      rewardElement.className = `reward-item ${isDisabled ? 'disabled' : ''}`;  
+      
+      if (!isDisabled) {  
+        rewardElement.onclick = () => showConfirmation(reward);  
+      }  
+      
+      rewardElement.innerHTML = `  
+        <div class="reward-header">  
+          <h4 class="reward-title">${reward.name}</h4>  
+          <span class="reward-points">${category === "milestone" ? reward.milestone : reward.points + " Punkte"}</span>  
+        </div>  
+        <p class="reward-description">${reward.description}</p>  
+      `;  
+      
+      container.appendChild(rewardElement);  
+    });  
+  });  
+}
     
     function updatePoints() {  
       document.getElementById('totalPoints').textContent = totalPoints;  
