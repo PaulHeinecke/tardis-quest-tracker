@@ -1,0 +1,1027 @@
+<!DOCTYPE html>  
+<html lang="de">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>TARDIS Quest Tracker - Elefantensammlung</title>  
+  <style>  
+    :root {  
+      --tardis-blue: #003b6f;  
+      --tardis-dark-blue: #00254a;  
+      --light-blue: #add8e6;  
+      --text-color: #fff;  
+      --accent-yellow: #f0c75e;  
+      --accent-gold: #ffd700;  
+    }  
+    
+    body {  
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+      background-color: var(--tardis-dark-blue);  
+      background-image: linear-gradient(135deg, var(--tardis-dark-blue) 0%, #0a1128 100%);  
+      color: var(--text-color);  
+      line-height: 1.6;  
+      margin: 0;  
+      padding: 0;  
+      min-height: 100vh;  
+    }  
+    
+    .container {  
+      max-width: 1200px;  
+      margin: 0 auto;  
+      padding: 0 20px;  
+    }  
+    
+    header {  
+      background-color: var(--tardis-blue);  
+      padding: 15px 0;  
+      border-bottom: 4px solid var(--accent-yellow);  
+      position: relative;  
+      overflow: hidden;  
+    }  
+    
+    .header-content {  
+      display: flex;  
+      align-items: center;  
+      position: relative;  
+      z-index: 2;  
+    }  
+    
+    .tardis-box {  
+      width: 60px;  
+      height: 80px;  
+      background-color: var(--tardis-blue);  
+      border: 2px solid white;  
+      position: relative;  
+      margin-right: 20px;  
+      flex-shrink: 0;  
+      border-radius: 2px;  
+    }  
+    
+    .tardis-sign {  
+      position: absolute;  
+      width: 100%;  
+      background-color: white;  
+      color: var(--tardis-blue);  
+      text-align: center;  
+      padding: 2px 0;  
+      font-weight: bold;  
+      font-size: 8px;  
+    }  
+    
+    .tardis-sign.top {  
+      top: 0;  
+    }  
+    
+    .tardis-sign.bottom {  
+      bottom: 0;  
+    }  
+    
+    .tardis-windows {  
+      display: grid;  
+      grid-template-columns: 1fr 1fr;  
+      gap: 5px;  
+      padding: 5px;  
+      position: absolute;  
+      top: 20px;  
+      left: 0;  
+      right: 0;  
+    }  
+    
+    .tardis-window {  
+      height: 10px;  
+      background-color: white;  
+    }  
+    
+    h1 {  
+      margin: 0;  
+      font-size: 28px;  
+    }  
+    
+    main {  
+      padding: 30px 0;  
+    }  
+    
+    .tabs {  
+      display: flex;  
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);  
+      margin-bottom: 20px;  
+    }  
+    
+    .tab {  
+      padding: 10px 20px;  
+      cursor: pointer;  
+      background: transparent;  
+      border: none;  
+      color: var(--text-color);  
+      opacity: 0.6;  
+      font-size: 16px;  
+      position: relative;  
+    }  
+    
+    .tab.active {  
+      opacity: 1;  
+      border-bottom: 3px solid var(--accent-yellow);  
+    }  
+    
+    .tab:hover {  
+      opacity: 1;  
+    }  
+    
+    .tab-icon {  
+      margin-right: 8px;  
+    }  
+    
+    .points-display {  
+      background: linear-gradient(135deg, var(--tardis-blue), #0a2472);  
+      padding: 20px;  
+      border-radius: 8px;  
+      margin-bottom: 30px;  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+      border: 1px solid rgba(255, 255, 255, 0.1);  
+    }  
+    
+    .points-info h2 {  
+      margin-top: 0;  
+      margin-bottom: 5px;  
+    }  
+    
+    .points-info p {  
+      margin: 0;  
+      opacity: 0.8;  
+      font-size: 14px;  
+    }  
+    
+    .points-counters {  
+      display: flex;  
+      gap: 20px;  
+    }  
+    
+    .points-counter {  
+      text-align: center;  
+    }  
+    
+    .points-label {  
+      font-size: 12px;  
+      opacity: 0.8;  
+    }  
+    
+    .points-value {  
+      font-size: 28px;  
+      font-weight: bold;  
+    }  
+    
+    .total-points {  
+      color: var(--accent-gold);  
+    }  
+    
+    .available-points {  
+      color: #27ae60;  
+    }  
+    
+    .card {  
+      background-color: rgba(0, 59, 111, 0.5);  
+      border-radius: 8px;  
+      padding: 20px;  
+      margin-bottom: 20px;  
+      border: 1px solid rgba(255, 255, 255, 0.1);  
+    }  
+    
+    .card-title {  
+      font-size: 20px;  
+      margin-top: 0;  
+      margin-bottom: 15px;  
+      display: flex;  
+      align-items: center;  
+    }  
+    
+    .card-title-icon {  
+      margin-right: 10px;  
+      font-size: 24px;  
+    }  
+    
+    /* Elephant collection styles */  
+    .elephant-filters {  
+      display: flex;  
+      flex-wrap: wrap;  
+      gap: 10px;  
+      margin-bottom: 20px;  
+    }  
+    
+    .filter-btn {  
+      background-color: rgba(0, 59, 111, 0.7);  
+      border: 1px solid rgba(255, 255, 255, 0.2);  
+      color: white;  
+      padding: 8px 15px;  
+      border-radius: 20px;  
+      cursor: pointer;  
+      transition: all 0.2s;  
+    }  
+    
+    .filter-btn:hover, .filter-btn.active {  
+      background-color: var(--tardis-blue);  
+      border-color: var(--accent-yellow);  
+    }  
+    
+    .elephant-grid {  
+      display: grid;  
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));  
+      gap: 15px;  
+      margin-top: 20px;  
+    }  
+    
+    .elephant-card {  
+      perspective: 1000px;  
+      height: 140px;  
+      cursor: pointer;  
+    }  
+    
+    .elephant-card-inner {  
+      position: relative;  
+      width: 100%;  
+      height: 100%;  
+      text-align: center;  
+      transition: transform 0.6s;  
+      transform-style: preserve-3d;  
+    }  
+    
+    .elephant-card.flipped .elephant-card-inner {  
+      transform: rotateY(180deg);  
+    }  
+    
+    .elephant-card-front, .elephant-card-back {  
+      position: absolute;  
+      width: 100%;  
+      height: 100%;  
+      -webkit-backface-visibility: hidden;  
+      backface-visibility: hidden;  
+      border-radius: 8px;  
+      display: flex;  
+      flex-direction: column;  
+      justify-content: center;  
+      align-items: center;  
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  
+    }  
+    
+    .elephant-card-front {  
+      background: linear-gradient(135deg, var(--tardis-blue), #0a2472);  
+      color: white;  
+      border: 2px solid rgba(255, 255, 255, 0.3);  
+    }  
+    
+    .elephant-card-back {  
+      background-color: white;  
+      color: #333;  
+      transform: rotateY(180deg);  
+      padding: 10px;  
+      display: flex;  
+      flex-direction: column;  
+      justify-content: space-between;  
+    }  
+    
+    .card-number {  
+      font-size: 32px;  
+      font-weight: bold;  
+    }  
+    
+    .tardis-symbol {  
+      font-size: 24px;  
+      opacity: 0.7;  
+      margin-top: 5px;  
+    }  
+    
+    .elephant-name {  
+      font-weight: bold;  
+      font-size: 12px;  
+      margin-top: 0;  
+      margin-bottom: 5px;  
+    }  
+    
+    .elephant-image {  
+      width: 50px;  
+      height: 50px;  
+      margin: 5px 0;  
+      object-fit: contain;  
+    }  
+    
+    .elephant-points {  
+      font-size: 10px;  
+      background-color: var(--tardis-blue);  
+      color: white;  
+      padding: 2px 5px;  
+      border-radius: 10px;  
+      margin-top: auto;  
+    }  
+    
+    .elephant-details-modal {  
+      display: none;  
+      position: fixed;  
+      top: 0;  
+      left: 0;  
+      right: 0;  
+      bottom: 0;  
+      background-color: rgba(0, 0, 0, 0.7);  
+      z-index: 1000;  
+      justify-content: center;  
+      align-items: center;  
+      padding: 20px;  
+    }  
+    
+    .elephant-details-content {  
+      background: linear-gradient(135deg, var(--tardis-blue), #0a2472);  
+      max-width: 500px;  
+      width: 90%;  
+      border-radius: 10px;  
+      padding: 20px;  
+      position: relative;  
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);  
+      border: 1px solid var(--accent-yellow);  
+    }  
+    
+    .close-modal {  
+      position: absolute;  
+      top: 10px;  
+      right: 10px;  
+      background: none;  
+      border: none;  
+      color: white;  
+      font-size: 24px;  
+      cursor: pointer;  
+    }  
+    
+    .elephant-details-header {  
+      display: flex;  
+      align-items: center;  
+      margin-bottom: 15px;  
+    }  
+    
+    .elephant-details-image {  
+      width: 80px;  
+      height: 80px;  
+      object-fit: contain;  
+      margin-right: 15px;  
+      background-color: white;  
+      border-radius: 5px;  
+      padding: 5px;  
+    }  
+    
+    .elephant-details-title h3 {  
+      margin: 0 0 5px 0;  
+    }  
+    
+    .elephant-meta {  
+      display: flex;  
+      gap: 10px;  
+      margin-bottom: 15px;  
+    }  
+    
+    .elephant-meta-item {  
+      background-color: rgba(0, 0, 0, 0.2);  
+      padding: 5px 10px;  
+      border-radius: 5px;  
+      font-size: 12px;  
+    }  
+    
+    .elephant-description {  
+      margin-bottom: 20px;  
+      line-height: 1.6;  
+    }  
+    
+    .elephant-set {  
+      background-color: rgba(0, 0, 0, 0.2);  
+      padding: 10px;  
+      border-radius: 5px;  
+      margin-top: 10px;  
+    }  
+    
+    .set-progress {  
+      height: 5px;  
+      background-color: rgba(255, 255, 255, 0.2);  
+      border-radius: 3px;  
+      margin-top: 10px;  
+      overflow: hidden;  
+    }  
+    
+    .set-progress-bar {  
+      height: 100%;  
+      background-color: var(--accent-gold);  
+      border-radius: 3px;  
+      transition: width 0.3s ease;  
+    }  
+    
+    .discover-feedback {  
+      position: fixed;  
+      top: 50%;  
+      left: 50%;  
+      transform: translate(-50%, -50%);  
+      background-color: rgba(0, 0, 0, 0.8);  
+      color: white;  
+      padding: 20px 30px;  
+      border-radius: 10px;  
+      z-index: 1100;  
+      text-align: center;  
+      opacity: 0;  
+      transition: opacity 0.3s;  
+    }  
+    
+    .discover-points {  
+      font-size: 24px;  
+      font-weight: bold;  
+      color: var(--accent-gold);  
+      margin: 10px 0;  
+    }  
+    
+    .sets-overview {  
+      margin-top: 30px;  
+    }  
+    
+    .set-item {  
+      background-color: rgba(0, 59, 111, 0.3);  
+      border-radius: 8px;  
+      padding: 15px;  
+      margin-bottom: 10px;  
+      border: 1px solid rgba(255, 255, 255, 0.1);  
+    }  
+    
+    .set-header {  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+      margin-bottom: 10px;  
+    }  
+    
+    .set-name {  
+      font-weight: bold;  
+      margin: 0;  
+    }  
+    
+    .set-status {  
+      font-size: 12px;  
+      padding: 3px 8px;  
+      border-radius: 10px;  
+    }  
+    
+    .set-complete {  
+      background-color: #27ae60;  
+      color: white;  
+    }  
+    
+    .set-incomplete {  
+      background-color: rgba(255, 255, 255, 0.2);  
+    }  
+    
+    .set-elephants {  
+      display: flex;  
+      gap: 10px;  
+      flex-wrap: wrap;  
+    }  
+    
+    .set-elephant {  
+      width: 40px;  
+      height: 40px;  
+      background-color: white;  
+      border-radius: 50%;  
+      display: flex;  
+      align-items: center;  
+      justify-content: center;  
+      font-size: 10px;  
+      color: var(--tardis-dark-blue);  
+      position: relative;  
+    }  
+    
+    .set-elephant.discovered {  
+      background-color: var(--accent-gold);  
+    }  
+    
+    .set-elephant-tooltip {  
+      position: absolute;  
+      bottom: 100%;  
+      left: 50%;  
+      transform: translateX(-50%);  
+      background-color: rgba(0, 0, 0, 0.8);  
+      color: white;  
+      padding: 5px 8px;  
+      border-radius: 4px;  
+      font-size: 10px;  
+      white-space: nowrap;  
+      opacity: 0;  
+      pointer-events: none;  
+      transition: opacity 0.2s;  
+      margin-bottom: 5px;  
+    }  
+    
+    .set-elephant:hover .set-elephant-tooltip {  
+      opacity: 1;  
+    }  
+    
+    .set-bonus {  
+      margin-top: 10px;  
+      font-size: 14px;  
+      color: var(--accent-gold);  
+    }  
+    
+    footer {  
+      text-align: center;  
+      padding: 20px 0;  
+      margin-top: 50px;  
+      border-top: 1px solid rgba(255, 255, 255, 0.1);  
+      font-size: 14px;  
+      color: rgba(255, 255, 255, 0.6);  
+    }  
+    
+    footer p {  
+      margin: 5px 0;  
+    }  
+    
+    @media (max-width: 768px) {  
+      .elephant-grid {  
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));  
+      }  
+      
+      .points-counters {  
+        flex-direction: column;  
+        gap: 10px;  
+      }  
+    }  
+  </style>  
+</head>  
+<body>  
+  <header>  
+    <div class="container">  
+      <div class="header-content">  
+        <div class="tardis-box">  
+          <div class="tardis-sign top">POLICE</div>  
+          <div class="tardis-windows">  
+            <div class="tardis-window"></div>  
+            <div class="tardis-window"></div>  
+            <div class="tardis-window"></div>  
+            <div class="tardis-window"></div>  
+          </div>  
+          <div class="tardis-sign bottom">BOX</div>  
+        </div>  
+        <h1>TARDIS Quest Tracker</h1>  
+      </div>  
+    </div>  
+  </header>  
+
+  <main class="container">  
+    <!-- Points Display -->  
+    <div class="points-display">  
+      <div class="points-info">  
+        <h2>Elefantensammlung</h2>  
+        <p>Finde alle 100 versteckten Elefanten und sammle Punkte</p>  
+      </div>  
+      <div class="points-counters">  
+        <div class="points-counter">  
+          <div class="points-label">Gesamtpunkte</div>  
+          <div class="points-value total-points" id="totalPoints">0</div>  
+        </div>  
+        <div class="points-counter">  
+          <div class="points-label">Gefundene Elefanten</div>  
+          <div class="points-value" id="discoveredElephants">0/100</div>  
+        </div>  
+      </div>  
+    </div>  
+
+    <div class="tabs">  
+      <a href="index.html" class="tab">  
+        <span class="tab-icon">🏠</span>Hauptseite  
+      </a>  
+      <button class="tab active">  
+        <span class="tab-icon">🐘</span>Elefanten  
+      </button>  
+      <button class="tab" onclick="showSetsTab()">  
+        <span class="tab-icon">📚</span>Sets  
+      </button>  
+    </div>  
+
+    <!-- Elephants Tab -->  
+    <div id="elephantsTab" class="card">  
+      <h2 class="card-title">  
+        <span class="card-title-icon">🐘</span>  
+        Elefantensammlung  
+      </h2>  
+      
+      <div class="elephant-filters">  
+        <button class="filter-btn active" data-filter="all">Alle</button>  
+        <button class="filter-btn" data-filter="discovered">Gefunden</button>  
+        <button class="filter-btn" data-filter="undiscovered">Nicht gefunden</button>  
+        <button class="filter-btn" data-filter="set1">Set 1: Elemente</button>  
+        <button class="filter-btn" data-filter="set2">Set 2: Historie</button>  
+        <button class="filter-btn" data-filter="set3">Set 3: Weltreise</button>  
+        <button class="filter-btn" data-filter="set4">Set 4: Fantasy</button>  
+        <button class="filter-btn" data-filter="set5">Set 5: Pop-Kultur</button>  
+      </div>  
+      
+      <div class="elephant-grid" id="elephantGrid">  
+        <!-- Elephant cards will be generated here -->  
+      </div>  
+    </div>  
+
+    <!-- Sets Tab -->  
+    <div id="setsTab" class="card" style="display: none;">  
+      <h2 class="card-title">  
+        <span class="card-title-icon">📚</span>  
+        Elefanten-Sets  
+      </h2>  
+      
+      <p>Sammle alle Elefanten eines Sets, um Bonus-Punkte zu erhalten!</p>  
+      
+      <div class="sets-overview" id="setsOverview">  
+        <!-- Set information will be generated here -->  
+      </div>  
+    </div>  
+  </main>  
+
+  <!-- Elephant Details Modal -->  
+  <div id="elephantDetailsModal" class="elephant-details-modal">  
+    <div class="elephant-details-content">  
+      <button class="close-modal" onclick="closeElephantDetails()">&times;</button>  
+      <div class="elephant-details-header">  
+        <img id="modalElephantImage" src="elephant-default.png" class="elephant-details-image" alt="Elephant">  
+        <div class="elephant-details-title">  
+          <h3 id="modalElephantName">Elefantenname</h3>  
+          <div class="elephant-meta">  
+            <span class="elephant-meta-item" id="modalElephantDifficulty">Schwierigkeit</span>  
+            <span class="elephant-meta-item" id="modalElephantRarity">Seltenheit</span>  
+            <span class="elephant-meta-item" id="modalElephantPoints">Punkte</span>  
+          </div>  
+        </div>  
+      </div>  
+      
+      <div class="elephant-description" id="modalElephantDescription">  
+        Beschreibung des Elefanten...  
+      </div>  
+      
+      <div class="elephant-set">  
+        <div id="modalSetName">Set: Elefanten der Elemente</div>  
+        <div class="set-progress">  
+          <div class="set-progress-bar" id="modalSetProgress"></div>  
+        </div>  
+        <div id="modalSetStatus">Status: 1/5 Elefanten gesammelt</div>  
+      </div>  
+    </div>  
+  </div>  
+  
+  <!-- Discovery Feedback -->  
+  <div id="discoverFeedback" class="discover-feedback">  
+    <div>Du hast einen neuen Elefanten entdeckt!</div>  
+    <div id="discoverName" class="discover-name">Elefantenname</div>  
+    <div id="discoverPoints" class="discover-points">+10 Punkte</div>  
+  </div>  
+
+  <footer>  
+    <div class="container">  
+      <p>Deine persönliche Elefantensammlung • Version 1.0</p>  
+      <p>Geronimo!</p>  
+    </div>  
+  </footer>  
+
+  <script src="elephants-data.js"></script>  
+  <script>  
+    // State Management  
+    let totalPoints = parseInt(localStorage.getItem('totalPoints') || '0');  
+    let availablePoints = parseInt(localStorage.getItem('availablePoints') || '0');  
+    
+    // Load elephant data from localStorage if available  
+    if (localStorage.getItem('elephantsData')) {  
+      try {  
+        const savedData = JSON.parse(localStorage.getItem('elephantsData'));  
+        
+        // Update the discovered state for each elephant  
+        elephantsData.forEach((elephant, index) => {  
+          if (index < savedData.length) {  
+            elephant.discovered = savedData[index].discovered;  
+          }  
+        });  
+        
+        // Update the set completion status  
+        if (localStorage.getItem('elephantSets')) {  
+          const savedSets = JSON.parse(localStorage.getItem('elephantSets'));  
+          elephantSets.forEach((set, index) => {  
+            if (index < savedSets.length) {  
+              set.completed = savedSets[index].completed;  
+            }  
+          });  
+        }  
+      } catch (e) {  
+        console.error("Error loading saved elephant data:", e);  
+      }  
+    }  
+    
+    // DOM Functions  
+    function initializeElephantCards() {  
+      const grid = document.getElementById('elephantGrid');  
+      grid.innerHTML = '';  
+      
+      elephantsData.forEach(elephant => {  
+        const card = document.createElement('div');  
+        card.className = `elephant-card ${elephant.discovered ? 'flipped' : ''}`;  
+        card.dataset.id = elephant.id;  
+        
+        card.innerHTML = `  
+          <div class="elephant-card-inner">  
+            <div class="elephant-card-front">  
+              <div class="card-number">${elephant.id}</div>  
+              <div class="tardis-symbol">?</div>  
+            </div>  
+            <div class="elephant-card-back">  
+              <h4 class="elephant-name">${elephant.name}</h4>  
+              <img src="${elephant.image}" class="elephant-image" alt="${elephant.name}">  
+              <div class="elephant-points">${elephant.points} Punkte</div>  
+            </div>  
+          </div>  
+        `;  
+        
+        card.addEventListener('click', () => handleElephantCardClick(elephant));  
+        grid.appendChild(card);  
+      });  
+      
+      updateCounters();  
+    }  
+    
+    function handleElephantCardClick(elephant) {  
+      if (elephant.discovered) {  
+        // Already discovered, show details  
+        showElephantDetails(elephant);  
+      } else {  
+        // Discover new elephant  
+        discoverElephant(elephant);  
+      }  
+    }  
+    
+    function discoverElephant(elephant) {  
+      elephant.discovered = true;  
+      
+      // Add points  
+      totalPoints += elephant.points;  
+      availablePoints += elephant.points;  
+      
+      // Check for set completion  
+      checkSetCompletion();  
+      
+      // Save state  
+      saveState();  
+      
+      // Update UI  
+      const card = document.querySelector(`.elephant-card[data-id="${elephant.id}"]`);  
+      card.classList.add('flipped');  
+      
+      // Show discovery feedback  
+      showDiscoveryFeedback(elephant);  
+      
+      // Update counters  
+      updateCounters();  
+    }  
+    
+    function showDiscoveryFeedback(elephant) {  
+      const feedback = document.getElementById('discoverFeedback');  
+      document.getElementById('discoverName').textContent = elephant.name;  
+      document.getElementById('discoverPoints').textContent = `+${elephant.points} Punkte`;  
+      
+      feedback.style.opacity = '1';  
+      
+      setTimeout(() => {  
+        feedback.style.opacity = '0';  
+      }, 3000);  
+    }  
+    
+    function checkSetCompletion() {  
+      elephantSets.forEach(set => {  
+        if (set.completed) return; // Skip already completed sets  
+        
+        const allDiscovered = set.elephantIds.every(id => {  
+          const elephant = elephantsData.find(e => e.id === id);  
+          return elephant && elephant.discovered;  
+        });  
+        
+        if (allDiscovered) {  
+          set.completed = true;  
+          
+          // Award bonus points  
+          totalPoints += set.bonusPoints;  
+          availablePoints += set.bonusPoints;  
+          
+          // Show set completion feedback  
+          alert(`Glückwunsch! Du hast das Set "${set.name}" vervollständigt und erhältst ${set.bonusPoints} Bonus-Punkte!`);  
+        }  
+      });  
+    }  
+    
+    function showElephantDetails(elephant) {  
+      const modal = document.getElementById('elephantDetailsModal');  
+      document.getElementById('modalElephantName').textContent = elephant.name;  
+      document.getElementById('modalElephantImage').src = elephant.image;  
+      document.getElementById('modalElephantDifficulty').textContent = elephant.difficulty;  
+      document.getElementById('modalElephantRarity').textContent = elephant.rarity;  
+      document.getElementById('modalElephantPoints').textContent = `${elephant.points} Punkte`;  
+      document.getElementById('modalElephantDescription').textContent = elephant.description;  
+      
+      // Set information  
+      const set = elephantSets.find(s => s.elephantIds.includes(elephant.id));  
+      if (set) {  
+        document.getElementById('modalSetName').textContent = `Set: ${set.name}`;  
+        
+        // Count discovered elephants in this set  
+        const discoveredCount = set.elephantIds.filter(id => {  
+          const e = elephantsData.find(ele => ele.id === id);  
+          return e && e.discovered;  
+        }).length;  
+        
+        document.getElementById('modalSetStatus').textContent =   
+          `Status: ${discoveredCount}/${set.elephantIds.length} Elefanten gesammelt`;  
+        
+        const progressPercentage = (discoveredCount / set.elephantIds.length) * 100;  
+        document.getElementById('modalSetProgress').style.width = `${progressPercentage}%`;  
+      } else {  
+        document.getElementById('modalSetName').textContent = `Kein bestimmtes Set`;  
+        document.getElementById('modalSetStatus').textContent = ``;  
+        document.getElementById('modalSetProgress').style.width = `0%`;  
+      }  
+      
+      modal.style.display = 'flex';  
+    }  
+    
+    function closeElephantDetails() {  
+      document.getElementById('elephantDetailsModal').style.display = 'none';  
+    }  
+    
+    function showSetsTab() {  
+      document.getElementById('elephantsTab').style.display = 'none';  
+      document.getElementById('setsTab').style.display = 'block';  
+      
+      // Update the tabs  
+      const tabs = document.querySelectorAll('.tab');  
+      tabs.forEach(tab => tab.classList.remove('active'));  
+      tabs[2].classList.add('active');  
+      
+      // Initialize sets overview  
+      initializeSetsOverview();  
+    }  
+    
+    function showElephantTab() {  
+      document.getElementById('elephantsTab').style.display = 'block';  
+      document.getElementById('setsTab').style.display = 'none';  
+      
+      // Update the tabs  
+      const tabs = document.querySelectorAll('.tab');  
+      tabs.forEach(tab => tab.classList.remove('active'));  
+      tabs[1].classList.add('active');  
+    }  
+    
+    function initializeSetsOverview() {  
+      const container = document.getElementById('setsOverview');  
+      container.innerHTML = '';  
+      
+      elephantSets.forEach(set => {  
+        // Count discovered elephants in this set  
+        const discoveredElephants = set.elephantIds.filter(id => {  
+          const elephant = elephantsData.find(e => e.id === id);  
+          return elephant && elephant.discovered;  
+        });  
+        
+        const setItem = document.createElement('div');  
+        setItem.className = 'set-item';  
+        
+        const headerHtml = `  
+          <div class="set-header">  
+            <h3 class="set-name">${set.name}</h3>  
+            <span class="set-status ${set.completed ? 'set-complete' : 'set-incomplete'}">  
+              ${set.completed ? 'Vollständig' : `${discoveredElephants.length}/${set.elephantIds.length}`}  
+            </span>  
+          </div>  
+        `;  
+        
+        const elephantsHtml = `  
+          <div class="set-elephants">  
+            ${set.elephantIds.map(id => {  
+              const elephant = elephantsData.find(e => e.id === id);  
+              return `  
+                <div class="set-elephant ${elephant.discovered ? 'discovered' : ''}">  
+                  ${elephant.id}  
+                  <div class="set-elephant-tooltip">${elephant.name}</div>  
+                </div>  
+              `;  
+            }).join('')}  
+          </div>  
+        `;  
+        
+        const bonusHtml = `  
+          <div class="set-bonus">  
+            ${set.completed   
+              ? `✓ Bonus von ${set.bonusPoints} Punkten erhalten!`   
+              : `Sammle alle Elefanten für einen Bonus von ${set.bonusPoints} Punkten!`}  
+          </div>  
+        `;  
+        
+        setItem.innerHTML = headerHtml + elephantsHtml + bonusHtml;  
+        container.appendChild(setItem);  
+      });  
+    }  
+    
+    function updateCounters() {  
+      document.getElementById('totalPoints').textContent = totalPoints;  
+      
+      const discoveredCount = elephantsData.filter(e => e.discovered).length;  
+      document.getElementById('discoveredElephants').textContent = `${discoveredCount}/100`;  
+      
+      // Update main page counters if needed  
+      try {  
+        if (window.parent && window.parent.updatePointsFromElephants) {  
+          window.parent.updatePointsFromElephants(totalPoints, availablePoints);  
+        }  
+      } catch (e) {  
+        console.log("Could not update parent window.");  
+      }  
+    }  
+    
+    function saveState() {  
+      localStorage.setItem('totalPoints', totalPoints.toString());  
+      localStorage.setItem('availablePoints', availablePoints.toString());  
+      localStorage.setItem('elephantsData', JSON.stringify(elephantsData));  
+      localStorage.setItem('elephantSets', JSON.stringify(elephantSets));  
+    }  
+    
+    // Filter functionality  
+    function setupFilters() {  
+      const filterButtons = document.querySelectorAll('.filter-btn');  
+      filterButtons.forEach(button => {  
+        button.addEventListener('click', () => {  
+          // Update active class  
+          filterButtons.forEach(btn => btn.classList.remove('active'));  
+          button.classList.add('active');  
+          
+          // Apply filter  
+          const filter = button.dataset.filter;  
+          filterElephants(filter);  
+        });  
+      });  
+    }  
+    
+    function filterElephants(filter) {  
+      const cards = document.querySelectorAll('.elephant-card');  
+      
+      cards.forEach(card => {  
+        const id = parseInt(card.dataset.id);  
+        const elephant = elephantsData.find(e => e.id === id);  
+        
+        let show = false;  
+        
+        switch(filter) {  
+          case 'all':  
+            show = true;  
+            break;  
+          case 'discovered':  
+            show = elephant.discovered;  
+            break;  
+          case 'undiscovered':  
+            show = !elephant.discovered;  
+            break;  
+          case 'set1':  
+            show = elephantSets[0].elephantIds.includes(id);  
+            break;  
+          case 'set2':  
+            show = elephantSets[1].elephantIds.includes(id);  
+            break;  
+          case 'set3':  
+            show = elephantSets[2].elephantIds.includes(id);  
+            break;  
+          case 'set4':  
+            show = elephantSets[3].elephantIds.includes(id);  
+            break;  
+          case 'set5':  
+            show = elephantSets[4].elephantIds.includes(id);  
+            break;  
+        }  
+        
+        card.style.display = show ? 'block' : 'none';  
+      });  
+    }  
+    
+    // Initialize when page loads  
+    window.onload = function() {  
+      initializeElephantCards();  
+      setupFilters();  
+      
+      // Set up tab navigation  
+      document.querySelectorAll('.tab').forEach((tab, index) => {  
+        if (index > 0) { // Skip the home tab  
+          tab.addEventListener('click', () => {  
+            if (index === 1) showElephantTab();  
+            else if (index === 2) showSetsTab();  
+          });  
+        }  
+      });  
+      
+      // Close modal when clicking outside  
+      window.onclick = function(event) {  
+        const modal = document.getElementById('elephantDetailsModal');  
+        if (event.target === modal) {  
+          closeElephantDetails();  
+        }  
+      };  
+    };  
+  </script>  
+</body>  
+</html>
