@@ -1145,7 +1145,12 @@
 // Funktion zum Aktualisieren der Punkte von der Elefantenseite  
 function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {  
   totalPoints = newTotalPoints;  
-  availablePoints = newAvailablePoints;  
+  availablePoints = newAvailablePoints;
+  
+  // Speichere die Punkte im localStorage  
+  localStorage.setItem('totalPoints', totalPoints);  
+  localStorage.setItem('availablePoints', availablePoints);  
+  
   updatePoints();  
 }  
   </script>  
