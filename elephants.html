@@ -973,6 +973,14 @@
       localStorage.setItem('availablePoints', availablePoints.toString());  
       localStorage.setItem('elephantsData', JSON.stringify(elephantsData));  
       localStorage.setItem('elephantSets', JSON.stringify(elephantSets));  
+       // Neuer Code - füge diesen hinzu  
+  try {  
+    if (window.parent && window.parent.updatePointsFromElephants) {  
+      window.parent.updatePointsFromElephants(totalPoints, availablePoints);  
+    }  
+  } catch (e) {  
+    console.log("Could not update parent window");  
+  }
     }  
     
     // Filter functionality  
