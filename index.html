@@ -1,0 +1,944 @@
+<!DOCTYPE html>  
+<html lang="de">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>TARDIS Quest Tracker</title>  
+  <style>  
+    :root {  
+      --tardis-blue: #003b6f;  
+      --tardis-dark-blue: #00254a;  
+      --light-blue: #add8e6;  
+      --text-color: #fff;  
+      --accent-yellow: #f0c75e;  
+      --accent-gold: #ffd700;  
+    }  
+    
+    body {  
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+      background-color: var(--tardis-dark-blue);  
+      background-image: linear-gradient(135deg, var(--tardis-dark-blue) 0%, #0a1128 100%);  
+      color: var(--text-color);  
+      line-height: 1.6;  
+      margin: 0;  
+      padding: 0;  
+      min-height: 100vh;  
+    }  
+    
+    .container {  
+      max-width: 1200px;  
+      margin: 0 auto;  
+      padding: 0 20px;  
+    }  
+    
+    header {  
+      background-color: var(--tardis-blue);  
+      padding: 15px 0;  
+      border-bottom: 4px solid var(--accent-yellow);  
+      position: relative;  
+      overflow: hidden;  
+    }  
+    
+    .header-content {  
+      display: flex;  
+      align-items: center;  
+      position: relative;  
+      z-index: 2;  
+    }  
+    
+    .tardis-box {  
+      width: 60px;  
+      height: 80px;  
+      background-color: var(--tardis-blue);  
+      border: 2px solid white;  
+      position: relative;  
+      margin-right: 20px;  
+      flex-shrink: 0;  
+      border-radius: 2px;  
+    }  
+    
+    .tardis-sign {  
+      position: absolute;  
+      width: 100%;  
+      background-color: white;  
+      color: var(--tardis-blue);  
+      text-align: center;  
+      padding: 2px 0;  
+      font-weight: bold;  
+      font-size: 8px;  
+    }  
+    
+    .tardis-sign.top {  
+      top: 0;  
+    }  
+    
+    .tardis-sign.bottom {  
+      bottom: 0;  
+    }  
+    
+    .tardis-windows {  
+      display: grid;  
+      grid-template-columns: 1fr 1fr;  
+      gap: 5px;  
+      padding: 5px;  
+      position: absolute;  
+      top: 20px;  
+      left: 0;  
+      right: 0;  
+    }  
+    
+    .tardis-window {  
+      height: 10px;  
+      background-color: white;  
+    }  
+    
+    h1 {  
+      margin: 0;  
+      font-size: 28px;  
+    }  
+    
+    .points-container {  
+      background: linear-gradient(135deg, var(--tardis-blue), #0a2472);  
+      padding: 20px;  
+      border-radius: 8px;  
+      margin: 30px 0;  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+      border: 1px solid rgba(255, 255, 255, 0.1);  
+    }  
+    
+    .points-info h2 {  
+      margin-top: 0;  
+      margin-bottom: 5px;  
+    }  
+    
+    .points-info p {  
+      margin: 0;  
+      opacity: 0.8;  
+      font-size: 14px;  
+    }  
+    
+    .points-counters {  
+      display: flex;  
+      gap: 20px;  
+    }  
+    
+    .points-counter {  
+      text-align: center;  
+    }  
+    
+    .points-label {  
+      font-size: 12px;  
+      opacity: 0.8;  
+    }  
+    
+    .points-value {  
+      font-size: 28px;  
+      font-weight: bold;  
+    }  
+    
+    .total-points {  
+      color: var(--accent-gold);  
+    }  
+    
+    .available-points {  
+      color: #27ae60;  
+    }  
+    
+    /* Progress Bar Styles */  
+    .progress-container {  
+      margin-top: 20px;  
+      background-color: rgba(0, 0, 0, 0.2);  
+      border-radius: 10px;  
+      height: 20px;  
+      width: 100%;  
+      overflow: hidden;  
+      position: relative;  
+    }  
+    
+    .progress-bar {  
+      background: linear-gradient(90deg, #4CAF50, var(--accent-gold));  
+      height: 100%;  
+      border-radius: 10px;  
+      transition: width 0.5s;  
+    }  
+    
+    .milestone-markers {  
+      position: absolute;  
+      top: 0;  
+      left: 0;  
+      width: 100%;  
+      height: 100%;  
+      display: flex;  
+    }  
+    
+    .milestone-marker {  
+      position: absolute;  
+      width: 3px;  
+      height: 100%;  
+      background-color: white;  
+      z-index: 1;  
+    }  
+    
+    .milestone-marker::after {  
+      content: attr(data-points);  
+      position: absolute;  
+      top: -20px;  
+      left: 50%;  
+      transform: translateX(-50%);  
+      font-size: 10px;  
+      white-space: nowrap;  
+    }  
+    
+    .rewards-container {  
+      margin-top: 40px;  
+    }  
+    
+    .rewards-section {  
+      margin-bottom: 40px;  
+    }  
+    
+    .reward-group {  
+      margin-bottom: 30px;  
+    }  
+    
+    .reward-group-header {  
+      background-color: var(--tardis-blue);  
+      padding: 10px 15px;  
+      border-radius: 8px 8px 0 0;  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+    }  
+    
+    .reward-group-title {  
+      font-weight: bold;  
+      font-size: 18px;  
+      margin: 0;  
+      color: var(--accent-yellow);  
+    }  
+    
+    .reward-group-points {  
+      background-color: rgba(0, 0, 0, 0.3);  
+      padding: 5px 10px;  
+      border-radius: 20px;  
+      font-size: 14px;  
+    }  
+    
+    .reward-list {  
+      background-color: rgba(0, 59, 111, 0.3);  
+      border-radius: 0 0 8px 8px;  
+      padding: 0;  
+      list-style-type: none;  
+      margin: 0;  
+    }  
+    
+    .reward-item {  
+      padding: 12px 15px;  
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);  
+      display: flex;  
+      align-items: center;  
+    }  
+    
+    .reward-item:last-child {  
+      border-bottom: none;  
+    }  
+    
+    .reward-icon {  
+      margin-right: 15px;  
+      color: var(--accent-yellow);  
+      font-size: 1.2rem;  
+    }  
+    
+    .reward-name {  
+      font-weight: bold;  
+    }  
+    
+    .reward-description {  
+      opacity: 0.8;  
+      font-size: 14px;  
+      margin-left: 10px;  
+    }  
+    
+    .milestones {  
+      margin-top: 40px;  
+    }  
+    
+    .milestone {  
+      background-color: rgba(0, 59, 111, 0.5);  
+      border-radius: 8px;  
+      padding: 20px;  
+      margin-bottom: 20px;  
+      border: 1px solid rgba(255, 255, 255, 0.1);  
+      display: flex;  
+      flex-direction: column;  
+    }  
+    
+    .milestone-header {  
+      display: flex;  
+      align-items: center;  
+    }  
+    
+    .milestone-icon {  
+      font-size: 2rem;  
+      margin-right: 15px;  
+      color: var(--accent-yellow);  
+    }  
+    
+    .milestone-name {  
+      font-weight: bold;  
+      font-size: 18px;  
+      margin-right: 15px;  
+    }  
+    
+    .milestone-points {  
+      background-color: rgba(0, 0, 0, 0.2);  
+      padding: 5px 10px;  
+      border-radius: 20px;  
+      font-size: 14px;  
+      margin-left: auto;  
+    }  
+    
+    .milestone-lock {  
+      display: inline-block;  
+      margin-left: 10px;  
+      color: var(--accent-yellow);  
+    }  
+    
+    .milestone-rewards {  
+      margin-top: 15px;  
+      padding: 12px;  
+      background-color: rgba(0, 0, 0, 0.2);  
+      border-radius: 6px;  
+      display: none;  
+    }  
+    
+    .milestone-rewards ul {  
+      margin: 0;  
+      padding-left: 20px;  
+    }  
+    
+    .milestone-rewards li {  
+      margin-bottom: 8px;  
+    }  
+    
+    .milestone-rewards li:last-child {  
+      margin-bottom: 0;  
+    }  
+    
+    /* Für freigeschaltete Meilensteine */  
+    .milestone.unlocked {  
+      border-color: var(--accent-gold);  
+    }  
+    
+    .milestone.unlocked .milestone-name {  
+      color: var(--accent-gold);  
+    }  
+    
+    .milestone.unlocked .milestone-rewards {  
+      display: block;  
+      border-left: 3px solid var(--accent-gold);  
+    }  
+    
+    .milestone.unlocked .milestone-lock {  
+      display: none;  
+    }  
+    
+    .nav-buttons {  
+      display: flex;  
+      justify-content: center;  
+      margin-top: 30px;  
+      margin-bottom: 50px;  
+    }  
+    
+    button {  
+      padding: 12px 20px;  
+      background-color: var(--tardis-blue);  
+      color: white;  
+      border: none;  
+      border-radius: 5px;  
+      cursor: pointer;  
+      font-size: 16px;  
+      border: 1px solid var(--accent-yellow);  
+      transition: all 0.2s;  
+    }  
+    
+    button:hover {  
+      background-color: var(--tardis-dark-blue);  
+      border-color: var(--accent-gold);  
+    }  
+    
+    footer {  
+      text-align: center;  
+      padding: 20px 0;  
+      margin-top: 50px;  
+      border-top: 1px solid rgba(255, 255, 255, 0.1);  
+      font-size: 14px;  
+      color: rgba(255, 255, 255, 0.6);  
+    }  
+    
+    footer p {  
+      margin: 5px 0;  
+    }  
+  </style>  
+</head>  
+<body>  
+  <header>  
+    <div class="container">  
+      <div class="header-content">  
+        <div class="tardis-box">  
+          <div class="tardis-sign top">POLICE</div>  
+          <div class="tardis-windows">  
+            <div class="tardis-window"></div>  
+            <div class="tardis-window"></div>  
+            <div class="tardis-window"></div>  
+            <div class="tardis-window"></div>  
+          </div>  
+          <div class="tardis-sign bottom">BOX</div>  
+        </div>  
+        <h1>TARDIS Quest Tracker</h1>  
+      </div>  
+    </div>  
+  </header>  
+  
+  <main class="container">  
+    <div class="points-container">  
+      <div class="points-info">  
+        <h2>Dein Fortschritt</h2>  
+        <p>Sammle Punkte und schalte Belohnungen frei</p>  
+      </div>  
+      <div class="points-counters">  
+        <div class="points-counter">  
+          <div class="points-label">Gesamtpunkte</div>  
+          <div class="points-value total-points" id="totalPoints">0</div>  
+        </div>  
+        <div class="points-counter">  
+          <div class="points-label">Verfügbare Punkte</div>  
+          <div class="points-value available-points" id="availablePoints">0</div>  
+        </div>  
+      </div>  
+    </div>  
+    
+    <!-- Progress Bar -->  
+    <div class="progress-container">  
+      <div class="progress-bar" id="progressBar"></div>  
+      <div class="milestone-markers">  
+        <div class="milestone-marker" style="left: 26.67%;" data-points="400"></div>  
+        <div class="milestone-marker" style="left: 40%;" data-points="600"></div>  
+        <div class="milestone-marker" style="left: 53.33%;" data-points="800"></div>  
+        <div class="milestone-marker" style="left: 66.67%;" data-points="1000"></div>  
+        <div class="milestone-marker" style="left: 100%;" data-points="1500"></div>  
+      </div>  
+    </div>  
+  
+    <div class="rewards-container">  
+      <h2>Verfügbare Belohnungen</h2>  
+      <p>Wähle eine Belohnung, um deine gesammelten Punkte einzulösen</p>  
+      
+      <div class="rewards-section">  
+        <!-- 25 Punkte Belohnungen -->  
+        <div class="reward-group">  
+          <div class="reward-group-header">  
+            <h3 class="reward-group-title">Einfache Belohnungen</h3>  
+            <div class="reward-group-points">25 Punkte</div>  
+          </div>  
+          <ul class="reward-list">  
+            <li class="reward-item">  
+              <div class="reward-icon">🎲</div>  
+              <div class="reward-name">"Spielmeister"</div>  
+              <div class="reward-description">Du darfst das nächste Gesellschaftsspiel auswählen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🌳</div>  
+              <div class="reward-name">"Outdoor-Abenteuer"</div>  
+              <div class="reward-description">Du darfst eine gemeinsame Aktivität im Freien bestimmen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🍪</div>  
+              <div class="reward-name">"Kekszauber"</div>  
+              <div class="reward-description">Du bekommst Kekse deiner Wahl</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🛋️</div>  
+              <div class="reward-name">"Kurze Rast"</div>  
+              <div class="reward-description">Du genießt einen Abend ohne Haushaltspflichten</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🎵</div>  
+              <div class="reward-name">"Musikmeister"</div>  
+              <div class="reward-description">Du darfst einen ganzen Tag die Musikauswahl bestimmen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🧚</div>  
+              <div class="reward-name">"Bibbidi-Bobbidi-Filmabend"</div>  
+              <div class="reward-description">Du wählst den nächsten Disney-Film für einen gemeinsamen Filmabend</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🔄</div>  
+              <div class="reward-name">"Ditto"</div>  
+              <div class="reward-description">Du darfst eine selbst erdachte Belohnung im Wert von 25 Punkten vorschlagen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🎭</div>  
+              <div class="reward-name">"Bardische Inspiration"</div>  
+              <div class="reward-description">Du bekommst eine kleine motivierende Überraschung an deinem Arbeitsplatz</div>  
+            </li>  
+          </ul>  
+        </div>  
+        
+        <!-- 50 Punkte Belohnungen -->  
+        <div class="reward-group">  
+          <div class="reward-group-header">  
+            <h3 class="reward-group-title">Mittlere Belohnungen</h3>  
+            <div class="reward-group-points">50 Punkte</div>  
+          </div>  
+          <ul class="reward-list">  
+            <li class="reward-item">  
+              <div class="reward-icon">🍻</div>  
+              <div class="reward-name">"Taverne des Abenteurers"</div>  
+              <div class="reward-description">Du bekommst einen Spieleabend mit Snacks deiner Wahl</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🎬</div>  
+              <div class="reward-name">"Filmfestival"</div>  
+              <div class="reward-description">Du genießt einen Filmabend mit einem Film deiner Wahl und selbstgemachtem Popcorn</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">⭕</div>  
+              <div class="reward-name">"Circle of Choice"</div>  
+              <div class="reward-description">Du darfst entscheiden, was ihr gemeinsam anschaut</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🍕</div>  
+              <div class="reward-name">"Pizzazauber"</div>  
+              <div class="reward-description">Du bekommst ein spontanes Pizza-Abendessen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">👁️</div>  
+              <div class="reward-name">"Der Seher von Alagaësia"</div>  
+              <div class="reward-description">Du darfst die nächste gemeinsame Serie aussuchen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">📦</div>  
+              <div class="reward-name">"Blaue Box-Überraschung"</div>  
+              <div class="reward-description">Du erhältst eine kleine, unerwartete Überraschung an einem zufälligen Tag</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">✨</div>  
+              <div class="reward-name">"Zaubermodifikation"</div>  
+              <div class="reward-description">Du darfst eine bestehende Belohnung nach deinen Wünschen anpassen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🔄</div>  
+              <div class="reward-name">"Shapeshifting"</div>  
+              <div class="reward-description">Du darfst eine selbst erdachte Belohnung im Wert von 50 Punkten vorschlagen</div>  
+            </li>  
+          </ul>  
+        </div>  
+        
+        <!-- 75 Punkte Belohnungen -->  
+        <div class="reward-group">  
+          <div class="reward-group-header">  
+            <h3 class="reward-group-title">Gehobene Belohnungen</h3>  
+            <div class="reward-group-points">75 Punkte</div>  
+          </div>  
+          <ul class="reward-list">  
+            <li class="reward-item">  
+              <div class="reward-icon">🎤</div>  
+              <div class="reward-name">"Gesangszauber"</div>  
+              <div class="reward-description">Du erlebst einen lustigen Karaoke-Abend mit absichtlich falschem Singen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🍽️</div>  
+              <div class="reward-name">"Festmahl deiner Träume"</div>  
+              <div class="reward-description">Du darfst dir ein Wunschessen aussuchen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">☕</div>  
+              <div class="reward-name">"Café-Expedition"</div>  
+              <div class="reward-description">Du genießt einen Nachmittag im Café Ragnarök</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🍔</div>  
+              <div class="reward-name">"TARDIS-Küche"</div>  
+              <div class="reward-description">Du bekommst ein komplett blaues Essen, zubereitet mit Liebe</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🎁</div>  
+              <div class="reward-name">"Bestellung bei Kerb!an"</div>  
+              <div class="reward-description">Du findest eine kleine versteckte Überraschung an einem unerwarteten Ort</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🔄</div>  
+              <div class="reward-name">"Vielsafttrank"</div>  
+              <div class="reward-description">Du darfst eine selbst erdachte Belohnung im Wert von 75 Punkten vorschlagen</div>  
+            </li>  
+          </ul>  
+        </div>  
+        
+        <!-- 100 Punkte Belohnungen -->  
+        <div class="reward-group">  
+          <div class="reward-group-header">  
+            <h3 class="reward-group-title">Besondere Belohnungen</h3>  
+            <div class="reward-group-points">100 Punkte</div>  
+          </div>  
+          <ul class="reward-list">  
+            <li class="reward-item">  
+              <div class="reward-icon">📺</div>  
+              <div class="reward-name">"Marathon-Zauber"</div>  
+              <div class="reward-description">Du genießt einen Marathon deiner Lieblingsserie/-film ohne Beschwerden</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🧠</div>  
+              <div class="reward-name">"Weisheitszauber"</div>  
+              <div class="reward-description">Du bekommst einen Gutschein, mit dem du in einer Diskussion automatisch Recht hast</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🍰</div>  
+              <div class="reward-name">"Süße Magie"</div>  
+              <div class="reward-description">Du erhältst einen kleinen Kuchen deiner Wahl</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🔄</div>  
+              <div class="reward-name">"Chamäleon-Schaltkreis"</div>  
+              <div class="reward-description">Du darfst eine selbst erdachte Belohnung im Wert von 100 Punkten vorschlagen</div>  
+            </li>  
+          </ul>  
+        </div>  
+        
+        <!-- 150 Punkte Belohnungen -->  
+        <div class="reward-group">  
+          <div class="reward-group-header">  
+            <h3 class="reward-group-title">Großartige Belohnungen</h3>  
+            <div class="reward-group-points">150 Punkte</div>  
+          </div>  
+          <ul class="reward-list">  
+            <li class="reward-item">  
+              <div class="reward-icon">🧳</div>  
+              <div class="reward-name">"Schatztruhe"</div>  
+              <div class="reward-description">Du erhältst eine kleine Überraschungstüte mit mehreren Kleinigkeiten</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">📒</div>  
+              <div class="reward-name">"Rivers Tagebuch"</div>  
+              <div class="reward-description">Du darfst eine bereits eingelöste Belohnung ohne neue Punktekosten wiederholen (alle Werte)</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🏠</div>  
+              <div class="reward-name">"Dorf Carvahall"</div>  
+              <div class="reward-description">Du schlenderst über den Wochenmarkt und genießt anschließend ein besonderes Marktessen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🤖</div>  
+              <div class="reward-name">"K-9 Service"</div>  
+              <div class="reward-description">Du wirst einen Monat lang vom Staubsaugen befreit</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🔄</div>  
+              <div class="reward-name">"Mimikri"</div>  
+              <div class="reward-description">Du darfst eine selbst erdachte Belohnung im Wert von 150 Punkten vorschlagen</div>  
+            </li>  
+          </ul>  
+        </div>  
+        
+        <!-- 200 Punkte Belohnungen -->  
+        <div class="reward-group">  
+          <div class="reward-group-header">  
+            <h3 class="reward-group-title">Epische Belohnungen</h3>  
+            <div class="reward-group-points">200 Punkte</div>  
+          </div>  
+          <ul class="reward-list">  
+            <li class="reward-item">  
+              <div class="reward-icon">🐉</div>  
+              <div class="reward-name">"Fliegen mit Saphira"</div>  
+              <div class="reward-description">Du darfst einen Ausflug zu einem Ort deiner Wahl unternehmen</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🧙</div>  
+              <div class="reward-name">"Besuch in der Winkelgasse"</div>  
+              <div class="reward-description">Du bekommst einen Besuch im Spieleladen mit kleinem Budget</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🏝️</div>  
+              <div class="reward-name">"Vaianas Inselabenteuer"</div>  
+              <div class="reward-description">Du genießt ein aufwändiges Picknick an einem schönen Ort</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🔄</div>  
+              <div class="reward-name">"Wunschring"</div>  
+              <div class="reward-description">Du darfst eine selbst erdachte Belohnung im Wert von 200 Punkten vorschlagen</div>  
+            </li>  
+          </ul>  
+        </div>  
+        
+        <!-- 250 Punkte Belohnungen -->  
+        <div class="reward-group">  
+          <div class="reward-group-header">  
+            <h3 class="reward-group-title">Legendäre Belohnungen</h3>  
+            <div class="reward-group-points">250 Punkte</div>  
+          </div>  
+          <ul class="reward-list">  
+            <li class="reward-item">  
+              <div class="reward-icon">📚</div>  
+              <div class="reward-name">"TARDIS-Bibliothek"</div>  
+              <div class="reward-description">Du erhältst ein neues Buch deiner Wahl</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🍽️</div>  
+              <div class="reward-name">"Lasst das Festmahl - beginnen"</div>  
+              <div class="reward-description">Du genießt ein besonderes mehrgängiges Abendessen zu Hause</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🔄</div>  
+              <div class="reward-name">"Aladdins Wunderlampe"</div>  
+              <div class="reward-description">Du darfst eine selbst erdachte Belohnung im Wert von 250 Punkten vorschlagen</div>  
+            </li>  
+          </ul>  
+        </div>  
+        
+        <!-- 300 Punkte Belohnungen -->  
+        <div class="reward-group">  
+          <div class="reward-group-header">  
+            <h3 class="reward-group-title">Mythische Belohnungen</h3>  
+            <div class="reward-group-points">300 Punkte</div>  
+          </div>  
+          <ul class="reward-list">  
+            <li class="reward-item">  
+              <div class="reward-icon">🍛</div>  
+              <div class="reward-name">"Kulinarische Expedition"</div>  
+              <div class="reward-description">Du bekommst einen Besuch im Tadsch Mahal</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">👍</div>  
+              <div class="reward-name">"Allons-y"</div>  
+              <div class="reward-description">Du erhältst einen Tag, an dem zu allen deinen Vorschlägen "Ja" gesagt wird</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🐬</div>  
+              <div class="reward-name">"Atlantis-Expedition"</div>  
+              <div class="reward-description">Du unternimmst einen Ausflug ins Sea-Life</div>  
+            </li>  
+            <li class="reward-item">  
+              <div class="reward-icon">🔄</div>  
+              <div class="reward-name">"Eigene Kreation"</div>  
+              <div class="reward-description">Du darfst eine selbst erdachte Belohnung im Wert von 300 Punkten vorschlagen</div>  
+            </li>  
+          </ul>  
+        </div>  
+      </div>  
+    </div>  
+  
+    <h2>Deine Meilensteine</h2>  
+  
+    <div class="milestones">  
+      <div class="milestone" data-points="400" id="milestone-1">  
+        <div class="milestone-header">  
+          <div class="milestone-icon">🏆</div>  
+          <div class="milestone-name">FIGURENJÄGER ANFÄNGER <span class="milestone-lock">🔒</span></div>  
+          <div class="milestone-points">400 Punkte</div>  
+        </div>  
+        <div class="milestone-rewards">  
+          <ul>  
+            <li><strong>"Schatzkammer":</strong> Du erhältst ein Überraschungspaket mit mehreren kleinen Fandom-Dingen</li>  
+            <li><strong>"Gemeinschaftsabenteuer":</strong> Du genießt eine besondere, für dich organisierte Aktivität mit Freunden</li>  
+            <li><strong>"Festmahl der Drachen":</strong> Du bekommst einen Besuch bei Nonna Rosa</li>  
+          </ul>  
+        </div>  
+      </div>  
+      
+      <div class="milestone" data-points="600" id="milestone-2">  
+        <div class="milestone-header">  
+          <div class="milestone-icon">🏆</div>  
+          <div class="milestone-name">FORTGESCHRITTENER FIGURENSAMMLER <span class="milestone-lock">🔒</span></div>  
+          <div class="milestone-points">600 Punkte</div>  
+        </div>  
+        <div class="milestone-rewards">  
+          <ul>  
+            <li><strong>"Side-Quest":</strong> Du unternimmst einen Tagesausflug zu einem interessanten Ort in eurer Umgebung</li>  
+            <li><strong>"TARDIS-Wunschreise":</strong> Du erhältst einen Gutschein für etwas, das du schon lange gemeinsam machen wolltest</li>  
+            <li><strong>"Abenteuerpfad":</strong> Du erlebst ein speziell für dich organisiertes Adventure-Date mit mehreren Stationen</li>  
+          </ul>  
+        </div>  
+      </div>  
+      
+      <div class="milestone" data-points="800" id="milestone-3">  
+        <div class="milestone-header">  
+          <div class="milestone-icon">🏆</div>  
+          <div class="milestone-name">FIGURENSUCHER MEISTER <span class="milestone-lock">🔒</span></div>  
+          <div class="milestone-points">800 Punkte</div>  
+        </div>  
+        <div class="milestone-rewards">  
+          <ul>  
+            <li><strong>"Große Versammlung":</strong> Du besuchst eine größere Convention oder Messe deiner Wahl</li>  
+            <li><strong>"Doctor für einen Tag":</strong> Du genießt einen ganzen Tag, der nach deinen Wünschen gestaltet wird</li>  
+            <li><strong>"Gemeinsames Epos":</strong> Du und dein Partner setzen ein gemeinsames Projekt deiner Wahl um</li>  
+            <li><strong>"Elfenpalast":</strong> Du übernachtest in einem Hotel deiner Wahl</li>  
+          </ul>  
+        </div>  
+      </div>  
+      
+      <div class="milestone" data-points="1000" id="milestone-4">  
+        <div class="milestone-header">  
+          <div class="milestone-icon">🏆</div>  
+          <div class="milestone-name">ELITE-FIGURENKENNER <span class="milestone-lock">🔒</span></div>  
+          <div class="milestone-points">1000 Punkte</div>  
+        </div>  
+        <div class="milestone-rewards">  
+          <ul>  
+            <li><strong>"Wochenendkampagne":</strong> Du unternimmst einen Wochenendtrip in eine deutsche Stadt deiner Wahl</li>  
+            <li><strong>"Legendäres Erlebnis":</strong> Du genießt ein besonderes Erlebnis wie ein Konzert, Event oder eine Aktivität deiner Wahl</li>  
+          </ul>  
+        </div>  
+      </div>  
+      
+      <div class="milestone" data-points="1500" id="milestone-5">  
+        <div class="milestone-header">  
+          <div class="milestone-icon">🏆</div>  
+          <div class="milestone-name">GROSSMEISTER DER FIGURENJAGD <span class="milestone-lock">🔒</span></div>  
+          <div class="milestone-points">1500 Punkte</div>  
+        </div>  
+        <div class="milestone-rewards">  
+          <ul>  
+            <li><strong>"Epische Reise":</strong> Du erlebst die ultimative Belohnung – eine Reise nach Prag</li>  
+          </ul>  
+        </div>  
+      </div>  
+    </div>  
+  
+    <div class="nav-buttons">  
+      <button onclick="location.href='elephants.html'">Zur Elefantensammlung</button>  
+    </div>  
+  </main>  
+  
+  <footer>  
+    <div class="container">  
+      <p>TARDIS Quest Tracker • Version 1.0</p>  
+      <p>Geronimo!</p>  
+    </div>  
+  </footer>  
+  
+  <script>  
+    // Variablen für die Punkte  
+    let totalPoints = 0;  
+    let availablePoints = 0;  
+    
+    // Maximalpunktzahl für die Fortschrittsanzeige  
+    const maxPoints = 1500;  
+    
+    // Funktion zum Aktualisieren der Punkte-Anzeige  
+    function updatePoints() {  
+      document.getElementById('totalPoints').textContent = totalPoints;  
+      document.getElementById('availablePoints').textContent = availablePoints;  
+      
+      // Aktualisiere die Fortschrittsanzeige  
+      const progressPercentage = Math.min(100, (totalPoints / maxPoints) * 100);  
+      document.getElementById('progressBar').style.width = progressPercentage + '%';  
+      
+      // Aktualisiere Meilensteine  
+      const milestones = document.querySelectorAll('.milestone');  
+      console.log("Prüfe Meilensteine mit", totalPoints, "Punkten");  
+      
+      milestones.forEach(milestone => {  
+        const requiredPoints = parseInt(milestone.getAttribute('data-points') || '0');  
+        console.log("Meilenstein", milestone.id, "benötigt", requiredPoints, "Punkte");  
+        
+        if (totalPoints >= requiredPoints) {  
+          milestone.classList.add('unlocked');  
+          console.log("Meilenstein", milestone.id, "freigeschalten!");  
+        } else {  
+          milestone.classList.remove('unlocked');  
+          console.log("Meilenstein", milestone.id, "noch gesperrt");  
+        }  
+      });  
+    }  
+    
+    // Funktion zum Laden der Punkte aus dem localStorage  
+    function loadPoints() {  
+      // Prüfe auf mögliche Schlüsselnamen für Elefantenpunkte  
+      const keysToCheck = [  
+        'elephantsTotal', 'elephantsAvailable',  // Früher genutzte Keys  
+        'elephantPoints', 'totalPoints',         // Allgemeine Keys  
+        'elephantsData'                          // JSON-Daten Key  
+      ];  
+      
+      console.log("Suche nach gespeicherten Elefantenpunkten...");  
+      
+      // Versuche, Elefanten-JSON-Daten zu laden  
+      const elephantsDataStr = localStorage.getItem('elephantsData');  
+      if (elephantsDataStr) {  
+        try {  
+          const elephantsData = JSON.parse(elephantsDataStr);  
+          // Wenn es eine totalPoints-Eigenschaft in den Daten gibt  
+          if (elephantsData && elephantsData.totalPoints !== undefined) {  
+            totalPoints = elephantsData.totalPoints;  
+            availablePoints = elephantsData.availablePoints || totalPoints;  
+            console.log("Punkte aus elephantsData JSON geladen:", totalPoints, availablePoints);  
+          }  
+        } catch (e) {  
+          console.log("Fehler beim Parsen der Elefantendaten:", e);  
+        }  
+      }  
+      
+      // Wenn keine Punkte aus JSON-Daten geladen wurden, prüfe alle anderen Keys  
+      if (totalPoints === 0) {  
+        // Durchsuche alle localStorage-Einträge nach elephant-bezogenen Punkten  
+        for (let i = 0; i < localStorage.length; i++) {  
+          const key = localStorage.key(i);  
+          if (key && key.toLowerCase().includes('elephant') && key.toLowerCase().includes('point')) {  
+            const value = parseInt(localStorage.getItem(key) || '0');  
+            if (value > 0) {  
+              console.log("Gefunden:", key, "=", value);  
+              if (key.toLowerCase().includes('total') || key.toLowerCase().includes('gesamt')) {  
+                totalPoints = value;  
+              } else if (key.toLowerCase().includes('available') || key.toLowerCase().includes('verfügbar')) {  
+                availablePoints = value;  
+              }  
+            }  
+          }  
+        }  
+        
+        // Wenn immer noch keine Punkte gefunden wurden, nimm die regulären  
+        if (totalPoints === 0) {  
+          totalPoints = parseInt(localStorage.getItem('totalPoints') || '0');  
+          availablePoints = parseInt(localStorage.getItem('availablePoints') || '0');  
+          console.log("Reguläre Punkte geladen:", totalPoints, availablePoints);  
+        } else {  
+          console.log("Elefantenpunkte geladen:", totalPoints, availablePoints);  
+        }  
+      }  
+      
+      // Stelle sicher, dass verfügbare Punkte nicht mehr als Gesamtpunkte sind  
+      if (availablePoints > totalPoints) {  
+        availablePoints = totalPoints;  
+      }  
+      
+      // Aktualisiere die Anzeige  
+      updatePoints();  
+    }  
+    
+    // Funktion zum Aktualisieren der Punkte von der Elefantenseite  
+    function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {  
+      console.log("Punkte von Elefanten erhalten:", newTotalPoints, newAvailablePoints);  
+      
+      // Konvertiere zu Zahlen für den Fall, dass Strings übergeben werden  
+      totalPoints = parseInt(newTotalPoints) || 0;  
+      availablePoints = parseInt(newAvailablePoints) || 0;  
+      
+      // Speichere die Punkte mit verschiedenen Keys, um Kompatibilität zu gewährleisten  
+      localStorage.setItem('totalPoints', totalPoints);  
+      localStorage.setItem('availablePoints', availablePoints);  
+      localStorage.setItem('elephantPoints', totalPoints);  // Zusätzlicher Key für bessere Erkennung  
+      
+      // Aktualisiere die Anzeige  
+      updatePoints();  
+    }  
+    
+    // Lade die Punkte beim Seitenstart  
+    document.addEventListener('DOMContentLoaded', function() {  
+      console.log("Seite geladen, lade Punkte...");  
+      loadPoints();  
+    });  
+  </script>  
+</body>  
+</html>
