@@ -3,1174 +3,233 @@
 <head>  
   <meta charset="UTF-8">  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-  <title>TARDIS Quest Tracker</title>  
+  <title>Fortschrittsseite</title>  
   <style>  
-    :root {  
-      --tardis-blue: #003b6f;  
-      --tardis-dark-blue: #00254a;  
-      --light-blue: #add8e6;  
-      --text-color: #fff;  
-      --accent-yellow: #f0c75e;  
-      --accent-gold: #ffd700;  
-    }  
-    
     body {  
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
-      background-color: var(--tardis-dark-blue);  
-      background-image: linear-gradient(135deg, var(--tardis-dark-blue) 0%, #0a1128 100%);  
-      color: var(--text-color);  
-      line-height: 1.6;  
-      margin: 0;  
-      padding: 0;  
-      min-height: 100vh;  
-    }  
-    
-    .container {  
-      max-width: 1200px;  
+      font-family: Arial, sans-serif;  
+      max-width: 800px;  
       margin: 0 auto;  
-      padding: 0 20px;  
-    }  
-    
-    header {  
-      background-color: var(--tardis-blue);  
-      padding: 15px 0;  
-      border-bottom: 4px solid var(--accent-yellow);  
-      position: relative;  
-      overflow: hidden;  
-    }  
-    
-    .header-content {  
-      display: flex;  
-      align-items: center;  
-      position: relative;  
-      z-index: 2;  
-    }  
-    
-    .tardis-box {  
-      width: 60px;  
-      height: 80px;  
-      background-color: var(--tardis-blue);  
-      border: 2px solid white;  
-      position: relative;  
-      margin-right: 20px;  
-      flex-shrink: 0;  
-      border-radius: 2px;  
-    }  
-    
-    .tardis-sign {  
-      position: absolute;  
-      width: 100%;  
-      background-color: white;  
-      color: var(--tardis-blue);  
-      text-align: center;  
-      padding: 2px 0;  
-      font-weight: bold;  
-      font-size: 8px;  
-    }  
-    
-    .tardis-sign.top {  
-      top: 0;  
-    }  
-    
-    .tardis-sign.bottom {  
-      bottom: 0;  
-    }  
-    
-    .tardis-windows {  
-      display: grid;  
-      grid-template-columns: 1fr 1fr;  
-      gap: 5px;  
-      padding: 5px;  
-      position: absolute;  
-      top: 20px;  
-      left: 0;  
-      right: 0;  
-    }  
-    
-    .tardis-window {  
-      height: 10px;  
-      background-color: white;  
-    }  
-    
-    h1 {  
-      margin: 0;  
-      font-size: 28px;  
-    }  
-    
-    main {  
-      padding: 30px 0;  
-    }  
-    
-    .tabs {  
-      display: flex;  
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);  
-      margin-bottom: 20px;  
-    }  
-    
-    .tab {  
-      padding: 10px 20px;  
-      cursor: pointer;  
-      background: transparent;  
-      border: none;  
-      color: var(--text-color);  
-      opacity: 0.6;  
-      font-size: 16px;  
-      position: relative;  
-    }  
-    
-    .tab.active {  
-      opacity: 1;  
-      border-bottom: 3px solid var(--accent-yellow);  
-    }  
-    
-    .tab:hover {  
-      opacity: 1;  
-    }  
-    
-    .tab-icon {  
-      margin-right: 8px;  
-    }  
-    
-    .tab-content {  
-      display: none;  
-    }  
-    
-    .tab-content.active {  
-      display: block;  
-    }  
-    
-    .card {  
-      background-color: rgba(0, 59, 111, 0.5);  
-      border-radius: 8px;  
       padding: 20px;  
-      margin-bottom: 20px;  
-      border: 1px solid rgba(255, 255, 255, 0.1);  
     }  
     
-    .card-title {  
-      font-size: 20px;  
-      margin-top: 0;  
-      margin-bottom: 15px;  
+    .header {  
+      text-align: center;  
+      margin-bottom: 30px;  
+    }  
+    
+    .points-container {  
       display: flex;  
-      align-items: center;  
-    }  
-    
-    .card-title-icon {  
-      margin-right: 10px;  
-      font-size: 24px;  
-    }  
-    
-    .rewards-container {  
-      display: grid;  
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));  
-      gap: 15px;  
-      margin-top: 20px;  
-    }  
-    
-    .reward-item {  
-      background-color: rgba(0, 37, 74, 0.7);  
-      border-radius: 8px;  
+      justify-content: space-around;  
+      margin: 20px 0;  
       padding: 15px;  
-      transition: transform 0.2s, box-shadow 0.2s;  
-      border: 1px solid rgba(255, 255, 255, 0.1);  
-      cursor: pointer;  
+      background-color: #f5f5f5;  
+      border-radius: 10px;  
     }  
     
-    .reward-item:hover {  
-      transform: translateY(-3px);  
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);  
+    .points-box {  
+      text-align: center;  
     }  
     
-    .reward-item.disabled {  
-      opacity: 0.5;  
-      cursor: not-allowed;  
-      transform: none;  
-      box-shadow: none;  
-    }  
-    
-    .reward-header {  
-      display: flex;  
-      justify-content: space-between;  
-      align-items: center;  
-      margin-bottom: 8px;  
-    }  
-    
-    .reward-title {  
-      font-weight: bold;  
-      margin: 0;  
-    }  
-    
-    .reward-points {  
-      background-color: var(--tardis-blue);  
-      padding: 3px 8px;  
-      border-radius: 12px;  
-      font-size: 12px;  
+    .points-value {  
+      font-size: 2rem;  
       font-weight: bold;  
     }  
     
-    .reward-description {  
-      font-size: 14px;  
-      color: rgba(255, 255, 255, 0.8);  
-    }  
-    
-    .milestone-container {  
-      position: relative;  
-      padding: 30px 0;  
-      margin-top: 40px;  
-    }  
-    
-    .milestone-path {  
-      position: absolute;  
-      top: 50px;  
-      left: 0;  
-      right: 0;  
-      height: 6px;  
-      background-color: rgba(255, 255, 255, 0.2);  
-      border-radius: 3px;  
-      z-index: 1;  
-    }  
-    
-    .milestone-path-progress {  
-      position: absolute;  
-      top: 0;  
-      left: 0;  
-      height: 100%;  
-      background: linear-gradient(to right, var(--accent-yellow), #ff9d00);  
-      border-radius: 3px;  
-      transition: width 1s ease-out;  
+    .points-label {  
+      font-size: 0.9rem;  
+      color: #666;  
     }  
     
     .milestones {  
-      display: flex;  
-      justify-content: space-between;  
-      position: relative;  
-      z-index: 2;  
+      margin-top: 40px;  
     }  
     
     .milestone {  
       display: flex;  
-      flex-direction: column;  
+      flex-wrap: wrap;  
       align-items: center;  
-      width: 20%;  
+      margin-bottom: 20px;  
+      padding: 15px;  
+      background-color: #f9f9f9;  
+      border-radius: 8px;  
+      border-left: 5px solid #ddd;  
     }  
     
     .milestone-icon {  
-      width: 50px;  
-      height: 50px;  
-      background-color: rgba(0, 37, 74, 0.7);  
-      border-radius: 50%;  
-      display: flex;  
-      align-items: center;  
-      justify-content: center;  
-      font-size: 24px;  
-      margin-bottom: 10px;  
-      position: relative;  
-      border: 2px solid rgba(255, 255, 255, 0.3);  
-    }  
-    
-    .milestone.reached .milestone-icon {  
-      background: linear-gradient(135deg, var(--accent-gold), #ffa500);  
-      color: var(--tardis-dark-blue);  
-      border: 2px solid white;  
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);  
-    }  
-    
-    .milestone-points {  
-      font-size: 12px;  
-      margin-top: 5px;  
-      opacity: 0.7;  
+      font-size: 2rem;  
+      margin-right: 15px;  
     }  
     
     .milestone-name {  
-      font-size: 14px;  
       font-weight: bold;  
-      text-align: center;  
-    }  
-    
-    .milestone.reached .milestone-name {  
-      color: var(--accent-gold);  
-    }  
-    
-    .milestone-rewards {  
-      background-color: rgba(0, 59, 111, 0.5);  
-      border-radius: 8px;  
-      padding: 10px 15px;  
-      margin-top: 40px;  
-      border-left: 3px solid var(--accent-gold);  
-    }  
-    
-    .milestone-rewards h3 {  
-      margin-top: 0;  
-      margin-bottom: 10px;  
-      font-size: 18px;  
-    }  
-    
-    .milestone-rewards-list {  
-      list-style-type: none;  
-      padding: 0;  
-      margin: 0;  
-    }  
-    
-    .milestone-rewards-list li {  
-      margin-bottom: 8px;  
-      padding-left: 20px;  
-      position: relative;  
-    }  
-    
-    .milestone-rewards-list li:before {  
-      content: "•";  
-      position: absolute;  
-      left: 0;  
-      color: var(--accent-gold);  
-    }  
-    
-    .next-milestone {  
-      background-color: rgba(0, 59, 111, 0.5);  
-      border-radius: 8px;  
-      padding: 15px;  
-      margin-top: 30px;  
-      display: flex;  
-      align-items: center;  
-      border: 1px solid rgba(255, 255, 255, 0.1);  
-    }  
-    
-    .next-milestone-icon {  
-      width: 40px;  
-      height: 40px;  
-      background-color: rgba(0, 37, 74, 0.7);  
-      border-radius: 50%;  
-      display: flex;  
-      align-items: center;  
-      justify-content: center;  
-      font-size: 20px;  
       margin-right: 15px;  
-      flex-shrink: 0;  
     }  
     
-    .next-milestone-info {  
-      flex-grow: 1;  
+    .milestone-points {  
+      color: #666;  
     }  
     
-    .next-milestone-name {  
-      font-weight: bold;  
-      margin-bottom: 5px;  
-    }  
-    
-    .next-milestone-desc {  
-      font-size: 14px;  
-      opacity: 0.8;  
-    }  
-    
-    .next-milestone-progress {  
-      font-size: 12px;  
-      margin-top: 5px;  
-    }  
-    
-    .points-display {  
-      background: linear-gradient(135deg, var(--tardis-blue), #0a2472);  
-      padding: 20px;  
-      border-radius: 8px;  
-      margin-bottom: 30px;  
-      display: flex;  
-      justify-content: space-between;  
-      align-items: center;  
-      border: 1px solid rgba(255, 255, 255, 0.1);  
-    }  
-    
-    .points-info h2 {  
-      margin-top: 0;  
-      margin-bottom: 5px;  
-    }  
-    
-    .points-info p {  
-      margin: 0;  
-      opacity: 0.8;  
-      font-size: 14px;  
-    }  
-    
-    .points-counters {  
-      display: flex;  
-      gap: 20px;  
-    }  
-    
-    .points-counter {  
-      text-align: center;  
-    }  
-    
-    .points-label {  
-      font-size: 12px;  
-      opacity: 0.8;  
-    }  
-    
-    .points-value {  
-      font-size: 28px;  
-      font-weight: bold;  
-    }  
-    
-    .total-points {  
-      color: var(--accent-gold);  
-    }  
-    
-    .available-points {  
-      color: #27ae60;  
-    }  
-    
-    /* For demo only */  
-    .demo-controls {  
-      background-color: rgba(0, 59, 111, 0.5);  
-      padding: 15px;  
-      border-radius: 8px;  
-      margin-bottom: 20px;  
-      text-align: center;  
-    }  
-    
-    .demo-btn {  
-      background-color: #1a5276;  
-      color: white;  
-      border: none;  
-      padding: 8px 15px;  
-      border-radius: 4px;  
-      cursor: pointer;  
-      margin: 0 5px;  
-      transition: background-color 0.2s;  
-    }  
-    
-    .demo-btn:hover {  
-      background-color: #2471a3;  
-    }  
-    
-    .demo-btn.add {  
-      background-color: #196f3d;  
-    }  
-    
-    .demo-btn.add:hover {  
-      background-color: #27ae60;  
-    }  
-    
-    .demo-btn.reset {  
-      background-color: #922b21;  
-    }  
-    
-    .demo-btn.reset:hover {  
-      background-color: #c0392b;  
-    }  
-    
-    /* Modal */  
-    .modal {  
-      display: none;  
-      position: fixed;  
-      top: 0;  
-      left: 0;  
-      width: 100%;  
-      height: 100%;  
-      background-color: rgba(0, 0, 0, 0.7);  
-      z-index: 100;  
-      justify-content: center;  
-      align-items: center;  
-    }  
-    
-    .modal-content {  
-      background: linear-gradient(135deg, var(--tardis-blue), #0a2472);  
-      width: 90%;  
-      max-width: 500px;  
-      border-radius: 8px;  
-      padding: 20px;  
-      border: 1px solid var(--accent-yellow);  
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);  
-    }  
-    
-    .modal-header {  
-      display: flex;  
-      justify-content: space-between;  
-      align-items: center;  
-      margin-bottom: 15px;  
-    }  
-    
-    .modal-title {  
-      font-size: 20px;  
-      margin: 0;  
-    }  
-    
-    .modal-close {  
-      background: none;  
-      border: none;  
-      font-size: 22px;  
-      color: white;  
-      cursor: pointer;  
-    }  
-    
-    .modal-body {  
-      margin-bottom: 20px;  
-    }  
-    
-    .modal-footer {  
-      text-align: right;  
-    }  
-    
-    .modal-btn {  
-      padding: 8px 15px;  
-      border: none;  
-      border-radius: 4px;  
-      cursor: pointer;  
+    .milestone-lock {  
+      display: inline-block;  
       margin-left: 10px;  
     }  
     
-    .modal-btn.confirm {  
-      background-color: #27ae60;  
+    .milestone-reward {  
+      flex-basis: 100%;  
+      margin-top: 10px;  
+      padding: 8px;  
+      background-color: #f0f0f0;  
+      border-radius: 5px;  
+      display: none;  
+    }  
+    
+    /* Für freigeschaltete Meilensteine */  
+    .milestone.unlocked {  
+      border-left-color: #4CAF50;  
+    }  
+    
+    .milestone.unlocked .milestone-name {  
+      color: #4CAF50;  
+    }  
+    
+    .milestone.unlocked .milestone-reward {  
+      display: block;  
+      border-left: 3px solid #4CAF50;  
+    }  
+    
+    .milestone.unlocked .milestone-lock {  
+      display: none;  
+    }  
+    
+    .nav-buttons {  
+      display: flex;  
+      justify-content: space-between;  
+      margin-top: 30px;  
+    }  
+    
+    button {  
+      padding: 10px 15px;  
+      background-color: #4CAF50;  
       color: white;  
+      border: none;  
+      border-radius: 5px;  
+      cursor: pointer;  
     }  
     
-    .modal-btn.cancel {  
-      background-color: #7f8c8d;  
-      color: white;  
+    button:hover {  
+      background-color: #45a049;  
     }  
-    
-    footer {  
-      text-align: center;  
-      padding: 20px 0;  
-      margin-top: 50px;  
-      border-top: 1px solid rgba(255, 255, 255, 0.1);  
-      font-size: 14px;  
-      color: rgba(255, 255, 255, 0.6);  
-    }  
-    
-    footer p {  
-      margin: 5px 0;  
-    }  
-    
-    @media (max-width: 768px) {  
-      .rewards-container {  
-        grid-template-columns: 1fr;  
-      }  
-      
-      .milestone {  
-        width: 18%;  
-      }  
-      
-      .milestone-icon {  
-        width: 40px;  
-        height: 40px;  
-        font-size: 18px;  
-      }  
-      
-      .milestone-name {  
-        font-size: 12px;  
-      }  
-      
-      .points-counters {  
-        flex-direction: column;  
-        gap: 10px;  
-      }  
-    }  
-    /* Schloss-Symbol neben dem Meilenstein-Namen */  
-.milestone-lock {  
-  display: inline-block;  
-  margin-left: 10px;  
-  font-size: 0.9em;  
-}  
-
-/* Standardmäßig Belohnungen verstecken */  
-.milestone-reward {  
-  margin-top: 5px;  
-  color: #4CAF50;  
-  font-style: italic;  
-  display: none;  
-}  
-
-/* Für freigeschaltete Meilensteine */  
-.milestone.unlocked .milestone-reward {  
-  display: block;  
-}  
-
-.milestone.unlocked .milestone-lock {  
-  display: none;  
-}  
-
-/* Optional: Stil für nicht freigeschaltete Meilensteine */  
-.milestone:not(.unlocked) {  
-  opacity: 0.8;  
-}  
   </style>  
 </head>  
 <body>  
-  <header>  
-    <div class="container">  
-      <div class="header-content">  
-        <div class="tardis-box">  
-          <div class="tardis-sign top">POLICE</div>  
-          <div class="tardis-windows">  
-            <div class="tardis-window"></div>  
-            <div class="tardis-window"></div>  
-            <div class="tardis-window"></div>  
-            <div class="tardis-window"></div>  
-          </div>  
-          <div class="tardis-sign bottom">BOX</div>  
-        </div>  
-        <h1>TARDIS Quest Tracker</h1>  
-      </div>  
+  <div class="header">  
+    <h1>Dein Fortschritt</h1>  
+  </div>  
+  
+  <div class="points-container">  
+    <div class="points-box">  
+      <div class="points-value" id="totalPoints">0</div>  
+      <div class="points-label">Gesamtpunkte</div>  
     </div>  
-  </header>  
-
-  <main class="container">  
-    <!-- Points Display -->  
-    <div class="points-display">  
-      <div class="points-info">  
-        <h2>Abenteurer-Pass</h2>  
-        <p>Deine Reise durch Raum und Zeit</p>  
-      </div>  
-      <div class="points-counters">  
-        <div class="points-counter">  
-          <div class="points-label">Gesamtpunkte</div>  
-          <div class="points-value total-points" id="totalPoints">0</div>  
-        </div>  
-        <div class="points-counter">  
-          <div class="points-label">Verfügbare Punkte</div>  
-          <div class="points-value available-points" id="availablePoints">0</div>  
-        </div>  
-      </div>  
-    </div>  
-
-    <!-- Demo Controls -->  
-    <div class="demo-controls">  
-      <button class="demo-btn reset" onclick="resetPoints()">Reset</button>  
-    </div>  
-
-    <!-- Tabs Navigation -->  
-  <div class="tabs">  
-  <button class="tab active" onclick="showTab('progress')">  
-    <span class="tab-icon">⭐</span>Fortschritt  
-  </button>  
-  <button class="tab" onclick="showTab('rewards')">  
-    <span class="tab-icon">📖</span>Belohnungen  
-  </button>  
-  <button class="tab" onclick="window.location.href='elephants.html'">  
-    <span class="tab-icon">🐘</span>Elefantensammlung  
-  </button>  
-</div>  
-
-    <!-- Tab Content: Progress -->  
-    <div id="progress" class="tab-content active">  
-      <div class="card">  
-        <h2 class="card-title">  
-          <span class="card-title-icon">✨</span>  
-          Deine TARDIS-Reise  
-        </h2>  
-        
-        <div class="milestone-container">  
-          <div class="milestone-path">  
-            <div class="milestone-path-progress" id="milestone-progress"></div>  
-          </div>  
-          
-          <div class="milestones">  
-            <div class="milestone" data-points="400" id="milestone-1">  
-              <div class="milestone-icon">🏆</div>  
-              <div class="milestone-name">FIGURENJÄGER ANFÄNGER <span class="milestone-lock">🔒</span></div>  
-              <div class="milestone-points">400 Punkte</div>  
-            </div>  
-            
-            <div class="milestone" data-points="600" id="milestone-2">  
-              <div class="milestone-icon">🔍</div>  
-              <div class="milestone-name">FORTGESCHRITTENER FIGURENSAMMLER <span class="milestone-lock">🔒</span></div>  
-              <div class="milestone-points">600 Punkte</div>  
-            </div>  
-            
-            <div class="milestone" data-points="800" id="milestone-3">  
-              <div class="milestone-icon">🎭</div>  
-              <div class="milestone-name">FIGURENSUCHER MEISTER <span class="milestone-lock">🔒</span></div>  
-              <div class="milestone-points">800 Punkte</div>  
-            </div>  
-            
-            <div class="milestone" data-points="1000" id="milestone-4">  
-              <div class="milestone-icon">👑</div>  
-              <div class="milestone-name">ELITE-FIGURENKENNER <span class="milestone-lock">🔒</span></div>  
-              <div class="milestone-points">1000 Punkte</div>  
-            </div>  
-            
-            <div class="milestone" data-points="1500" id="milestone-5">  
-              <div class="milestone-icon">🌟</div>  
-              <div class="milestone-name">GROSSMEISTER DER FIGURENJAGD <span class="milestone-lock">🔒</span></div>  
-              <div class="milestone-points">1500 Punkte</div>  
-            </div>  
-          </div>  
-        </div>  
-        
-        <div class="next-milestone" id="next-milestone-container">  
-          <div class="next-milestone-icon" id="next-milestone-icon">🏆</div>  
-          <div class="next-milestone-info">  
-            <div class="next-milestone-name">Nächstes Ziel: <span id="next-milestone-name">FIGURENJÄGER ANFÄNGER</span></div>  
-            <div class="next-milestone-desc" id="next-milestone-desc">Sammle 400 Punkte, um diesen Meilenstein zu erreichen</div>  
-            <div class="next-milestone-progress">Noch <span id="points-needed">400</span> Punkte bis zum Erreichen!</div>  
-          </div>  
-        </div>  
-        
-        <div class="milestone-rewards" id="milestone-rewards" style="display: none;">  
-          <h3>Belohnungen für erreichte Meilensteine:</h3>  
-          <ul class="milestone-rewards-list" id="milestone-rewards-list">  
-            <!-- Will be filled with JavaScript -->  
-          </ul>  
-        </div>  
-      </div>  
-    </div>  
-
-    <!-- Tab Content: Rewards -->  
-    <div id="rewards" class="tab-content">  
-      <div class="card">  
-        <h2 class="card-title">  
-          <span class="card-title-icon">📖</span>  
-          Spellbook of Rewards  
-        </h2>  
-        
-        <!-- 25 Punkte -->  
-        <div class="card">  
-          <h3>25 Punkte</h3>  
-          <div class="rewards-container" id="rewards-25">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-        
-        <!-- 50 Punkte -->  
-        <div class="card">  
-          <h3>50 Punkte</h3>  
-          <div class="rewards-container" id="rewards-50">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-        
-        <!-- 75 Punkte -->  
-        <div class="card">  
-          <h3>75 Punkte</h3>  
-          <div class="rewards-container" id="rewards-75">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-        
-        <!-- 100 Punkte -->  
-        <div class="card">  
-          <h3>100 Punkte</h3>  
-          <div class="rewards-container" id="rewards-100">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-        
-        <!-- 150 Punkte -->  
-        <div class="card">  
-          <h3>150 Punkte</h3>  
-          <div class="rewards-container" id="rewards-150">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-        
-        <!-- 200 Punkte -->  
-        <div class="card">  
-          <h3>200 Punkte</h3>  
-          <div class="rewards-container" id="rewards-200">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-        
-        <!-- 250 Punkte -->  
-        <div class="card">  
-          <h3>250 Punkte</h3>  
-          <div class="rewards-container" id="rewards-250">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-        
-        <!-- 300 Punkte -->  
-        <div class="card">  
-          <h3>300 Punkte</h3>  
-          <div class="rewards-container" id="rewards-300">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-        
-        <!-- Meilenstein-Belohnungen -->  
-        <div class="card">  
-          <h3>Meilenstein-Belohnungen</h3>  
-          <div class="rewards-container" id="rewards-milestone">  
-            <!-- Will be filled with JavaScript -->  
-          </div>  
-        </div>  
-      </div>  
-    </div>  
-  </main>  
-
-  <!-- Confirmation Modal -->  
-  <div class="modal" id="confirmationModal">  
-    <div class="modal-content">  
-      <div class="modal-header">  
-        <h3 class="modal-title">Belohnung einlösen</h3>  
-        <button class="modal-close" onclick="closeModal()">&times;</button>  
-      </div>  
-      <div class="modal-body">  
-        <p>Möchtest du "<span id="rewardName"></span>" für <span id="rewardCost"></span> Punkte einlösen?</p>  
-      </div>  
-      <div class="modal-footer">  
-        <button class="modal-btn cancel" onclick="closeModal()">Abbrechen</button>  
-        <button class="modal-btn confirm" id="confirmReward">Bestätigen</button>  
-      </div>  
+    <div class="points-box">  
+      <div class="points-value" id="availablePoints">0</div>  
+      <div class="points-label">Verfügbare Punkte</div>  
     </div>  
   </div>  
-
-  <footer>  
-    <div class="container">  
-      <p>Deine persönliche Schatzsuche • Version 1.0</p>  
-      <p>Allons-y! Geronimo!</p>  
+  
+  <h2>Deine Meilensteine</h2>  
+  
+  <div class="milestones">  
+    <div class="milestone" data-points="400" id="milestone-1">  
+      <div class="milestone-icon">🏆</div>  
+      <div class="milestone-name">FIGURENJÄGER ANFÄNGER <span class="milestone-lock">🔒</span></div>  
+      <div class="milestone-points">400 Punkte</div>  
+      <div class="milestone-reward">Belohnung: Ein neues Kapitel für dein Abenteuer!</div>  
     </div>  
-  </footer>  
-
+    
+    <div class="milestone" data-points="800" id="milestone-2">  
+      <div class="milestone-icon">🏆</div>  
+      <div class="milestone-name">FIGURENJÄGER FORTGESCHRITTEN <span class="milestone-lock">🔒</span></div>  
+      <div class="milestone-points">800 Punkte</div>  
+      <div class="milestone-reward">Belohnung: Freischaltung einer neuen Figuren-Kategorie!</div>  
+    </div>  
+    
+    <div class="milestone" data-points="1200" id="milestone-3">  
+      <div class="milestone-icon">🏆</div>  
+      <div class="milestone-name">FIGURENJÄGER PROFI <span class="milestone-lock">🔒</span></div>  
+      <div class="milestone-points">1200 Punkte</div>  
+      <div class="milestone-reward">Belohnung: Ein Geheimnis wird gelüftet!</div>  
+    </div>  
+  </div>  
+  
+  <div class="nav-buttons">  
+    <button onclick="location.href='elephants.html'">Zur Elefantensammlung</button>  
+  </div>  
+  
   <script>  
-    // State  
+    // Variablen für die Punkte  
     let totalPoints = 0;  
     let availablePoints = 0;  
-    let selectedReward = null;  
     
-    // Milestone data with rewards  
-    const milestoneData = [  
-      {   
-        id: 1,   
-        name: "FIGURENJÄGER ANFÄNGER",   
-        points: 400,   
-        reached: false,   
-        icon: "🏆",   
-        description: "Sammle 400 Punkte, um diesen Meilenstein zu erreichen",   
-        rewards: [  
-          "Schatzkammer: Du erhältst ein Überraschungspaket mit mehreren kleinen Fandom-Dingen",   
-          "Gemeinschaftsabenteuer: Du genießt eine besondere, für dich organisierte Aktivität mit Freunden",   
-          "Festmahl der Drachen: Du bekommst einen Besuch bei Nonna Rosa"  
-        ]   
-      },  
-      {   
-        id: 2,   
-        name: "FORTGESCHRITTENER FIGURENSAMMLER",   
-        points: 600,   
-        reached: false,   
-        icon: "🔍",   
-        description: "Sammle 600 Punkte, um diesen Meilenstein zu erreichen",   
-        rewards: [  
-          "Side-Quest: Du unternimmst einen Tagesausflug zu einem interessanten Ort in eurer Umgebung",  
-          "TARDIS-Wunschreise: Du erhältst einen Gutschein für etwas, das du schon lange gemeinsam machen wolltest",  
-          "Abenteuerpfad: Du erlebst ein speziell für dich organisiertes Adventure-Date mit mehreren Stationen"  
-        ]   
-      },  
-      {   
-        id: 3,   
-        name: "FIGURENSUCHER MEISTER",   
-        points: 800,   
-        reached: false,   
-        icon: "🎭",   
-        description: "Sammle 800 Punkte, um diesen Meilenstein zu erreichen",   
-        rewards: [  
-          "Große Versammlung: Du besuchst eine größere Convention oder Messe deiner Wahl",  
-          "Doctor für einen Tag: Du genießt einen ganzen Tag, der nach deinen Wünschen gestaltet wird",  
-          "Gemeinsames Epos: Du und dein Partner setzen ein gemeinsames Projekt deiner Wahl um",  
-          "Elfenpalast: Du übernachtest in einem Hotel deiner Wahl"  
-        ]   
-      },  
-      {   
-        id: 4,   
-        name: "ELITE-FIGURENKENNER",   
-        points: 1000,   
-        reached: false,   
-        icon: "👑",   
-        description: "Sammle 1000 Punkte, um diesen Meilenstein zu erreichen",   
-        rewards: [  
-          "Wochenendkampagne: Du unternimmst einen Wochenendtrip in eine deutsche Stadt deiner Wahl",  
-          "Legendäres Erlebnis: Du genießt ein besonderes Erlebnis wie ein Konzert, Event oder eine Aktivität deiner Wahl"  
-        ]   
-      },  
-      {   
-        id: 5,   
-        name: "GROSSMEISTER DER FIGURENJAGD",   
-        points: 1500,   
-        reached: false,   
-        icon: "🌟",   
-        description: "Sammle 1500 Punkte, um diesen Meilenstein zu erreichen",   
-        rewards: [  
-          "Epische Reise: Du erlebst die ultimative Belohnung – eine Reise nach Prag"  
-        ]   
-      }  
-    ];  
-    
-    // Rewards data  
-    const rewardsData = [  
-      // 25 Punkte  
-      { id: 1, name: "Spielmeister", points: 25, description: "Du darfst das nächste Gesellschaftsspiel auswählen", category: "25" },  
-      { id: 2, name: "Outdoor-Abenteuer", points: 25, description: "Du darfst eine gemeinsame Aktivität im Freien bestimmen", category: "25" },  
-      { id: 3, name: "Kekszauber", points: 25, description: "Du bekommst Kekse deiner Wahl", category: "25" },  
-      { id: 4, name: "Kurze Rast", points: 25, description: "Du genießt einen Abend ohne Haushaltspflichten", category: "25" },  
-      { id: 5, name: "Musikmeister", points: 25, description: "Du darfst einen ganzen Tag die Musikauswahl bestimmen", category: "25" },  
-      { id: 6, name: "Bibbidi-Bobbidi-Filmabend", points: 25, description: "Du wählst den nächsten Disney-Film für einen gemeinsamen Filmabend", category: "25" },  
-      { id: 7, name: "Ditto", points: 25, description: "Du darfst eine selbst erdachte Belohnung im Wert von 25 Punkten vorschlagen", category: "25" },  
-      { id: 8, name: "Bardische Inspiration", points: 25, description: "Du bekommst eine kleine motivierende Überraschung an deinem Arbeitsplatz", category: "25" },  
+    // Funktion zum Aktualisieren der Punkte-Anzeige  
+    function updatePoints() {  
+      document.getElementById('totalPoints').textContent = totalPoints;  
+      document.getElementById('availablePoints').textContent = availablePoints;  
       
-      // 50 Punkte  
-      { id: 9, name: "Taverne des Abenteurers", points: 50, description: "Du bekommst einen Spieleabend mit Snacks deiner Wahl", category: "50" },  
-      { id: 10, name: "Filmfestival", points: 50, description: "Du genießt einen Filmabend mit einem Film deiner Wahl und selbstgemachtem Popcorn", category: "50" },  
-      { id: 11, name: "Circle of Choice", points: 50, description: "Du darfst entscheiden, was ihr gemeinsam anschaut", category: "50" },  
-      { id: 12, name: "Pizzazauber", points: 50, description: "Du bekommst ein spontanes Pizza-Abendessen", category: "50" },  
-      { id: 13, name: "Der Seher von Alagaësia", points: 50, description: "Du darfst die nächste gemeinsame Serie aussuchen", category: "50" },  
-      { id: 14, name: "Blaue Box-Überraschung", points: 50, description: "Du erhältst eine kleine, unerwartete Überraschung an einem zufälligen Tag", category: "50" },  
-      { id: 15, name: "Zaubermodifikation", points: 50, description: "Du darfst eine bestehende Belohnung nach deinen Wünschen anpassen", category: "50" },  
-      { id: 16, name: "Shapeshifting", points: 50, description: "Du darfst eine selbst erdachte Belohnung im Wert von 50 Punkten vorschlagen", category: "50" },  
-      
-      // 75 Punkte  
-      { id: 17, name: "Gesangszauber", points: 75, description: "Du erlebst einen lustigen Karaoke-Abend mit absichtlich falschem Singen", category: "75" },  
-      { id: 18, name: "Festmahl deiner Träume", points: 75, description: "Du darfst dir ein Wunschessen aussuchen", category: "75" },  
-      { id: 19, name: "Café-Expedition", points: 75, description: "Du genießt einen Nachmittag im Café Ragnarök", category: "75" },  
-      { id: 20, name: "TARDIS-Küche", points: 75, description: "Du bekommst ein komplett blaues Essen, zubereitet mit Liebe", category: "75" },  
-      { id: 21, name: "Bestellung bei Kerb!an", points: 75, description: "Du findest eine kleine versteckte Überraschung an einem unerwarteten Ort", category: "75" },  
-      { id: 22, name: "Vielsafttrank", points: 75, description: "Du darfst eine selbst erdachte Belohnung im Wert von 75 Punkten vorschlagen", category: "75" },  
-      
-      // 100 Punkte  
-      { id: 23, name: "Marathon-Zauber", points: 100, description: "Du genießt einen Marathon deiner Lieblingsserie/-film ohne Beschwerden", category: "100" },  
-      { id: 24, name: "Weisheitszauber", points: 100, description: "Du bekommst einen Gutschein, mit dem du in einer Diskussion automatisch Recht hast", category: "100" },  
-      { id: 25, name: "Süße Magie", points: 100, description: "Du erhältst einen kleinen Kuchen deiner Wahl", category: "100" },  
-      { id: 26, name: "Chamäleon-Schaltkreis", points: 100, description: "Du darfst eine selbst erdachte Belohnung im Wert von 100 Punkten vorschlagen", category: "100" },  
-      
-      // 150 Punkte  
-      { id: 27, name: "Schatztruhe", points: 150, description: "Du erhältst eine kleine Überraschungstüte mit mehreren Kleinigkeiten", category: "150" },  
-      { id: 28, name: "Rivers Tagebuch", points: 150, description: "Du darfst eine bereits eingelöste Belohnung ohne neue Punktekosten wiederholen (alle Werte)", category: "150" },  
-      { id: 29, name: "Dorf Carvahall", points: 150, description: "Du schlenderst über den Wochenmarkt und genießt anschließend ein besonderes Marktessen", category: "150" },  
-      { id: 30, name: "K-9 Service", points: 150, description: "Du wirst einen Monat lang vom Staubsaugen befreit", category: "150" },  
-      { id: 31, name: "Mimikri", points: 150, description: "Du darfst eine selbst erdachte Belohnung im Wert von 150 Punkten vorschlagen", category: "150" },  
-      
-      // 200 Punkte  
-      { id: 32, name: "Fliegen mit Saphira", points: 200, description: "Du darfst einen Ausflug zu einem Ort deiner Wahl unternehmen", category: "200" },  
-      { id: 33, name: "Besuch in der Winkelgasse", points: 200, description: "Du bekommst einen Besuch im Spieleladen mit kleinem Budget", category: "200" },  
-      { id: 34, name: "Vaianas Inselabenteuer", points: 200, description: "Du genießt ein aufwändiges Picknick an einem schönen Ort", category: "200" },  
-      { id: 35, name: "Wunschring", points: 200, description: "Du darfst eine selbst erdachte Belohnung im Wert von 200 Punkten vorschlagen", category: "200" },  
-      
-      // 250 Punkte  
-      { id: 36, name: "TARDIS-Bibliothek", points: 250, description: "Du erhältst ein neues Buch deiner Wahl", category: "250" },  
-      { id: 37, name: "Lasst das Festmahl - beginnen", points: 250, description: "Du genießt ein besonderes mehrgängiges Abendessen zu Hause", category: "250" },  
-      { id: 38, name: "Aladdins Wunderlampe", points: 250, description: "Du darfst eine selbst erdachte Belohnung im Wert von 250 Punkten vorschlagen", category: "250" },  
-      
-      // 300 Punkte  
-      { id: 39, name: "Kulinarische Expedition", points: 300, description: "Du bekommst einen Besuch im Tadsch Mahal", category: "300" },  
-      { id: 40, name: "Allons-y", points: 300, description: "Du erhältst einen Tag, an dem zu allen deinen Vorschlägen \"Ja\" gesagt wird", category: "300" },  
-      { id: 41, name: "Atlantis-Expedition", points: 300, description: "Du unternimmst einen Ausflug ins Sea-Life", category: "300" },  
-      { id: 42, name: "Eigene Kreation", points: 300, description: "Du darfst eine selbst erdachte Belohnung im Wert von 300 Punkten vorschlagen", category: "300" },  
-      
-      // Meilenstein-Belohnungen  
-      { id: 43, name: "Schatzkammer", points: 0, description: "Du erhältst ein Überraschungspaket mit mehreren kleinen Fandom-Dingen", category: "milestone", milestone: "FIGURENJÄGER ANFÄNGER" },  
-      { id: 44, name: "Gemeinschaftsabenteuer", points: 0, description: "Du genießt eine besondere, für dich organisierte Aktivität mit Freunden", category: "milestone", milestone: "FIGURENJÄGER ANFÄNGER" },  
-      { id: 45, name: "Festmahl der Drachen", points: 0, description: "Du bekommst einen Besuch bei Nonna Rosa", category: "milestone", milestone: "FIGURENJÄGER ANFÄNGER" },  
-      
-      { id: 46, name: "Side-Quest", points: 0, description: "Du unternimmst einen Tagesausflug zu einem interessanten Ort in eurer Umgebung", category: "milestone", milestone: "FORTGESCHRITTENER FIGURENSAMMLER" },  
-      { id: 47, name: "TARDIS-Wunschreise", points: 0, description: "Du erhältst einen Gutschein für etwas, das du schon lange gemeinsam machen wolltest", category: "milestone", milestone: "FORTGESCHRITTENER FIGURENSAMMLER" },  
-      { id: 48, name: "Abenteuerpfad", points: 0, description: "Du erlebst ein speziell für dich organisiertes Adventure-Date mit mehreren Stationen", category: "milestone", milestone: "FORTGESCHRITTENER FIGURENSAMMLER" },  
-      
-      { id: 49, name: "Große Versammlung", points: 0, description: "Du besuchst eine größere Convention oder Messe deiner Wahl", category: "milestone", milestone: "FIGURENSUCHER MEISTER" },  
-      { id: 50, name: "Doctor für einen Tag", points: 0, description: "Du genießt einen ganzen Tag, der nach deinen Wünschen gestaltet wird", category: "milestone", milestone: "FIGURENSUCHER MEISTER" },  
-      { id: 51, name: "Gemeinsames Epos", points: 0, description: "Du und dein Partner setzen ein gemeinsames Projekt deiner Wahl um", category: "milestone", milestone: "FIGURENSUCHER MEISTER" },  
-      { id: 52, name: "Elfenpalast", points: 0, description: "Du übernachtest in einem Hotel deiner Wahl", category: "milestone", milestone: "FIGURENSUCHER MEISTER" },  
-      
-      { id: 53, name: "Wochenendkampagne", points: 0, description: "Du unternimmst einen Wochenendtrip in eine deutsche Stadt deiner Wahl", category: "milestone", milestone: "ELITE-FIGURENKENNER" },  
-      { id: 54, name: "Legendäres Erlebnis", points: 0, description: "Du genießt ein besonderes Erlebnis wie ein Konzert, Event oder eine Aktivität deiner Wahl", category: "milestone", milestone: "ELITE-FIGURENKENNER" },  
-      
-      { id: 55, name: "Epische Reise", points: 0, description: "Du erlebst die ultimative Belohnung – eine Reise nach Prag", category: "milestone", milestone: "GROSSMEISTER DER FIGURENJAGD" }  
-    ];  
-    
-    // Functions  
-    function renderRewards() {  
-      // Group rewards by category  
-      const categories = ["25", "50", "75", "100", "150", "200", "250", "300", "milestone"];  
-      
-      categories.forEach(category => {  
-        const container = document.getElementById(`rewards-${category}`);  
-        if (!container) return;  
+      // Aktualisiere Meilensteine  
+      const milestones = document.querySelectorAll('.milestone');  
+      milestones.forEach(milestone => {  
+        const requiredPoints = parseInt(milestone.getAttribute('data-points') || '0');  
         
-        // Clear container  
-        container.innerHTML = '';  
-        
-        // Get rewards for this category  
-        const categoryRewards = rewardsData.filter(reward => reward.category === category);  
-        
-        // Sort by points  
-        categoryRewards.sort((a, b) => a.points - b.points);  
-        
-        // Render rewards  
-        categoryRewards.forEach(reward => {  
-          const isDisabled = category !== "milestone" && availablePoints < reward.points;  
-          const isMilestoneAvailable = category === "milestone" && milestoneData.find(m => m.name === reward.milestone)?.reached;  
-          
-          const rewardElement = document.createElement('div');  
-          rewardElement.className = `reward-item ${isDisabled ? 'disabled' : ''}`;  
-          
-          if (!isDisabled || (category === "milestone" && isMilestoneAvailable)) {  
-            rewardElement.onclick = () => showConfirmation(reward);  
-          }  
-          
-          rewardElement.innerHTML = `  
-            <div class="reward-header">  
-              <h4 class="reward-title">${reward.name}</h4>  
-              <span class="reward-points">${category === "milestone" ? reward.milestone : reward.points + " Punkte"}</span>  
-            </div>  
-            <p class="reward-description">${reward.description}</p>  
-          `;  
-          
-          container.appendChild(rewardElement);  
-        });  
+        if (totalPoints >= requiredPoints) {  
+          milestone.classList.add('unlocked');  
+        } else {  
+          milestone.classList.remove('unlocked');  
+        }  
       });  
     }  
     
-function updatePoints() {  
-  document.getElementById('totalPoints').textContent = totalPoints;  
-  document.getElementById('availablePoints').textContent = availablePoints;  
-  
-  // Aktualisiere Meilensteine  
-  const milestones = document.querySelectorAll('.milestone');  
-  milestones.forEach(milestone => {  
-    const requiredPoints = parseInt(milestone.getAttribute('data-points') || '0');  
-    
-    if (totalPoints >= requiredPoints) {  
-      milestone.classList.add('unlocked');  
-    } else {  
-      milestone.classList.remove('unlocked');  
-    }  
-  });  
-}  
-      // Update next milestone  
-      updateNextMilestone(nextMilestone);  
+    // Funktion zum Laden der Punkte aus dem localStorage  
+    function loadPoints() {  
+      // Prüfe zuerst auf Elefantenpunkte  
+      const elephantTotal = parseInt(localStorage.getItem('elephant_totalPoints') || '0');  
+      const elephantAvailable = parseInt(localStorage.getItem('elephant_availablePoints') || '0');  
       
-      // Update reached milestones  
-      updateReachedMilestones(reachedMilestones);  
-      
-      // Update rewards availability  
-      renderRewards();  
-    }  
-    
-    function updateNextMilestone(nextMilestone) {  
-      if (nextMilestone) {  
-        document.getElementById('next-milestone-container').style.display = 'flex';  
-        document.getElementById('next-milestone-icon').textContent = nextMilestone.icon;  
-        document.getElementById('next-milestone-name').textContent = nextMilestone.name;  
-        document.getElementById('next-milestone-desc').textContent = nextMilestone.description;  
-        document.getElementById('points-needed').textContent = nextMilestone.points - totalPoints;  
+      if (elephantTotal > 0) {  
+        // Wenn Elefantenpunkte existieren, verwende diese  
+        totalPoints = elephantTotal;  
+        availablePoints = elephantAvailable;  
+        console.log("Punkte von Elefantensammlung geladen:", totalPoints, availablePoints);  
       } else {  
-        document.getElementById('next-milestone-container').style.display = 'none';  
+        // Ansonsten lade die regulären Punkte  
+        totalPoints = parseInt(localStorage.getItem('totalPoints') || '0');  
+        availablePoints = parseInt(localStorage.getItem('availablePoints') || '0');  
       }  
-    }  
-    
-    function updateReachedMilestones(reachedMilestones) {  
-      const rewardsContainer = document.getElementById('milestone-rewards');  
-      const rewardsList = document.getElementById('milestone-rewards-list');  
       
-      if (reachedMilestones.length > 0) {  
-        rewardsContainer.style.display = 'block';  
-        rewardsList.innerHTML = '';  
-        
-        reachedMilestones.forEach(milestone => {  
-          const milestoneItem = document.createElement('li');  
-          milestoneItem.innerHTML = `<strong>${milestone.name}</strong>: ${milestone.rewards.join(', ')}`;  
-          rewardsList.appendChild(milestoneItem);  
-        });  
-      } else {  
-        rewardsContainer.style.display = 'none';  
-      }  
-    }  
-    
-    function addPoints(points) {  
-      totalPoints += points;  
-      availablePoints += points;  
+      // Aktualisiere die Anzeige  
       updatePoints();  
     }  
     
-    function resetPoints() {  
-      totalPoints = 0;  
-      availablePoints = 0;  
+    // Funktion zum Aktualisieren der Punkte von der Elefantenseite  
+    function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {  
+      console.log("Punkte von Elefanten erhalten:", newTotalPoints, newAvailablePoints);  
+      totalPoints = newTotalPoints;  
+      availablePoints = newAvailablePoints;  
+      
+      // Speichere die Punkte  
+      localStorage.setItem('totalPoints', totalPoints);  
+      localStorage.setItem('availablePoints', availablePoints);  
+      localStorage.setItem('elephant_totalPoints', totalPoints);  
+      localStorage.setItem('elephant_availablePoints', availablePoints);  
+      
+      // Aktualisiere die Anzeige  
       updatePoints();  
     }  
     
-    function showTab(tabId) {  
-      // Hide all tabs  
-      const tabContents = document.getElementsByClassName('tab-content');  
-      for (let i = 0; i < tabContents.length; i++) {  
-        tabContents[i].classList.remove('active');  
-      }  
-      
-      // Remove active class from all tab buttons  
-      const tabs = document.getElementsByClassName('tab');  
-      for (let i = 0; i < tabs.length; i++) {  
-        tabs[i].classList.remove('active');  
-      }  
-      
-      // Show selected tab  
-      document.getElementById(tabId).classList.add('active');  
-      
-      // Add active class to clicked tab button  
-      event.currentTarget.classList.add('active');  
-    }  
-    
-    function showConfirmation(reward) {  
-      selectedReward = reward;  
-      
-      if (reward.category === "milestone") {  
-        const milestone = milestoneData.find(m => m.name === reward.milestone);  
-        if (!milestone || !milestone.reached) return;  
-        
-        document.getElementById('rewardName').textContent = reward.name;  
-        document.getElementById('rewardCost').textContent = reward.milestone;  
-        document.getElementById('confirmReward').onclick = redeemMilestoneReward;  
-      } else {  
-        if (availablePoints < reward.points) return;  
-        
-        document.getElementById('rewardName').textContent = reward.name;  
-        document.getElementById('rewardCost').textContent = reward.points;  
-        document.getElementById('confirmReward').onclick = redeemReward;  
-      }  
-      
-      document.getElementById('confirmationModal').style.display = 'flex';  
-    }  
-    
-    function closeModal() {  
-      document.getElementById('confirmationModal').style.display = 'none';  
-    }  
-    
-    function redeemReward() {  
-      if (!selectedReward || availablePoints < selectedReward.points) return;  
-      
-      availablePoints -= selectedReward.points;  
-      updatePoints();  
-      closeModal();  
-      
-      // You could add more feedback here, like a success notification  
-      alert(`Belohnung "${selectedReward.name}" erfolgreich eingelöst!`);  
-    }  
-    
-    function redeemMilestoneReward() {  
-      if (!selectedReward) return;  
-      
-      const milestone = milestoneData.find(m => m.name === selectedReward.milestone);  
-      if (!milestone || !milestone.reached) return;  
-      
-      closeModal();  
-      
-      // You could add more feedback here, like a success notification  
-      alert(`Meilenstein-Belohnung "${selectedReward.name}" erfolgreich eingelöst!`);  
-    }  
-    
-    // Initialize the app  
-    window.onload = function() {  
-      updatePoints();  
-      renderRewards();  
-    };
-// Funktion zum Aktualisieren der Punkte von der Elefantenseite  
-function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {  
-  totalPoints = newTotalPoints;  
-  availablePoints = newAvailablePoints;
-  
-  // Speichere die Punkte im localStorage  
-  localStorage.setItem('totalPoints', totalPoints);  
-  localStorage.setItem('availablePoints', availablePoints);  
-  
-  updatePoints();  
-}  
-// Initialisiere die Meilensteine beim Laden der Seite  
-document.addEventListener('DOMContentLoaded', function() {  
-  updatePoints(); // Dies wird auch die Meilensteine aktualisieren  
-});  
+    // Lade die Punkte beim Seitenstart  
+    document.addEventListener('DOMContentLoaded', function() {  
+      loadPoints();  
+    });  
   </script>  
 </body>  
 </html>
