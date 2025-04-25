@@ -544,12 +544,7 @@
       margin-left: 5px;  
       font-size: 0.8em;  
     }  
-    
-    /* Belohnungen standardmäßig verstecken */  
-    .reward-item.milestone-reward {  
-      display: none;  
-    }  
-    
+             
     /* Belohnungen nur anzeigen wenn Meilenstein erreicht */  
     .milestone.reached .milestone-lock {  
       display: none;  
@@ -634,7 +629,10 @@
       </button>  
       <button class="tab" onclick="showTab('rewards')">  
         <span class="tab-icon">📖</span>Belohnungen  
-      </button>  
+      </button> 
+      <a href="elephants.html" class="tab">  
+  <span class="tab-icon">🐘</span>Elefanten  
+</a>
     </div>  
 
     <!-- Tab Content: Progress -->  
@@ -817,8 +815,8 @@
     // Laden der gespeicherten Punkte aus dem localStorage beim Start  
     function loadSavedPoints() {  
       // Reguläre Punkte laden  
-      const savedTotalPoints = parseInt(localStorage.getItem('totalPoints') || '0');  
-      const savedAvailablePoints = parseInt(localStorage.getItem('availablePoints') || '0');  
+      const elephantsTotalPoints = parseInt(localStorage.getItem('elephantsTotal') || '0');  
+const elephantsAvailablePoints = parseInt(localStorage.getItem('elephantsAvailable') || '0'); 
       
       // Elefanten-Punkte laden  
       const elephantsTotalPoints = parseInt(localStorage.getItem('elephant_totalPoints') || '0');  
