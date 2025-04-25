@@ -611,14 +611,17 @@
     </div>  
 
     <!-- Tabs Navigation -->  
-    <div class="tabs">  
-      <button class="tab active" onclick="showTab('progress')">  
-        <span class="tab-icon">⭐</span>Fortschritt  
-      </button>  
-      <button class="tab" onclick="showTab('rewards')">  
-        <span class="tab-icon">📖</span>Belohnungen  
-      </button>  
-    </div>  
+  <div class="tabs">  
+  <button class="tab active" onclick="showTab('progress')">  
+    <span class="tab-icon">⭐</span>Fortschritt  
+  </button>  
+  <button class="tab" onclick="showTab('rewards')">  
+    <span class="tab-icon">📖</span>Belohnungen  
+  </button>  
+  <button class="tab" onclick="window.location.href='elephants.html'">  
+    <span class="tab-icon">🐘</span>Elefantensammlung  
+  </button>  
+</div>  
 
     <!-- Tab Content: Progress -->  
     <div id="progress" class="tab-content active">  
@@ -1141,7 +1144,13 @@
     window.onload = function() {  
       updatePoints();  
       renderRewards();  
-    };  
+    };
+// Funktion zum Aktualisieren der Punkte von der Elefantenseite  
+function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {  
+  totalPoints = newTotalPoints;  
+  availablePoints = newAvailablePoints;  
+  updatePoints();  
+}  
   </script>  
 </body>  
 </html>
