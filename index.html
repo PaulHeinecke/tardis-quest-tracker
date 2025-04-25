@@ -1096,23 +1096,29 @@ function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {
       }  
     }  
     
-    function updateReachedMilestones(reachedMilestones) {  
-      const rewardsContainer = document.getElementById('milestone-rewards');  
-      const rewardsList = document.getElementById('milestone-rewards-list');  
+  function updateReachedMilestones(reachedMilestones) {  
+  // Da wir den milestone-rewards Container entfernt haben, müssen wir nichts tun  
+  // oder wir können eine visuelle Bestätigung hinzufügen wie z.B. eine Animation  
+  
+  // Prüfen, ob das Element existiert, um Fehler zu vermeiden  
+  const rewardsContainer = document.getElementById('milestone-rewards');  
+  if (rewardsContainer) {  
+    const rewardsList = document.getElementById('milestone-rewards-list');  
+    
+    if (reachedMilestones.length > 0) {  
+      rewardsContainer.style.display = 'block';  
+      rewardsList.innerHTML = '';  
       
-      if (reachedMilestones.length > 0) {  
-        rewardsContainer.style.display = 'block';  
-        rewardsList.innerHTML = '';  
-        
-        reachedMilestones.forEach(milestone => {  
-          const milestoneItem = document.createElement('li');  
-          milestoneItem.innerHTML = `<strong>${milestone.name}</strong>: ${milestone.rewards.join(', ')}`;  
-          rewardsList.appendChild(milestoneItem);  
-        });  
-      } else {  
-        rewardsContainer.style.display = 'none';  
-      }  
+      reachedMilestones.forEach(milestone => {  
+        const milestoneItem = document.createElement('li');  
+        milestoneItem.innerHTML = `<strong>${milestone.name}</strong>: ${milestone.rewards.join(', ')}`;  
+        rewardsList.appendChild(milestoneItem);  
+      });  
+    } else {  
+      rewardsContainer.style.display = 'none';  
     }  
+  }  
+}
     
     function addPoints(points) {  
       totalPoints += points;  
