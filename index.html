@@ -821,31 +821,34 @@
       const savedAvailablePoints = parseInt(localStorage.getItem('availablePoints') || '0');  
       
       // Elefanten-Punkte laden  
-      const elephantsTotalPoints = parseInt(localStorage.getItem('elephantsTotal') || '0');  
-      const elephantsAvailablePoints = parseInt(localStorage.getItem('elephantsAvailable') || '0');  
+      const elephantsTotalPoints = parseInt(localStorage.getItem('elephant_totalPoints') || '0');  
+  const elephantsAvailablePoints = parseInt(localStorage.getItem('elephant_availablePoints') || '0');    
       
       // Die höheren Punkte verwenden (entweder reguläre oder Elefanten-Punkte)  
       totalPoints = Math.max(savedTotalPoints, elephantsTotalPoints);  
       availablePoints = Math.max(savedAvailablePoints, elephantsAvailablePoints);  
       
       // Punkte aktualisieren  
-      updatePoints();  
+      updatePoints();
+       console.log("Gespeicherte Punkte geladen:", totalPoints, availablePoints);
     }  
     
-    // Funktion zum Aktualisieren der Punkte von elephants.html  
-    function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {  
-      totalPoints = newTotalPoints;  
-      availablePoints = newAvailablePoints;  
-      
-      // Speichere die Punkte im localStorage  
-      localStorage.setItem('elephantsTotal', totalPoints);  
-      localStorage.setItem('elephantsAvailable', availablePoints);  
-      localStorage.setItem('totalPoints', totalPoints);  
-      localStorage.setItem('availablePoints', availablePoints);  
-      
-      // Aktualisiere die Anzeige  
-      updatePoints();  
-    }  
+   // Funktion zum Aktualisieren der Punkte von elephants.html  
+function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {  
+  // Nur aktualisieren, wenn die neuen Punkte höher sind  
+  if (newTotalPoints > totalPoints) {  
+    totalPoints = newTotalPoints;  
+    availablePoints = newAvailablePoints;  
+    
+    // Speichere die Punkte im localStorage  
+    localStorage.setItem('totalPoints', totalPoints);  
+    localStorage.setItem('availablePoints', availablePoints);  
+    
+    // Aktualisiere die Anzeige  
+    updatePoints();  
+    console.log("Punkte von der Elefantensammlung aktualisiert:", totalPoints, availablePoints);  
+  }  
+}  
     
     // Milestone data with rewards  
     const milestoneData = [  
@@ -1209,6 +1212,7 @@
     // Initialize the app  
     window.onload = function() {  
       loadSavedPoints(); // Lade gespeicherte Punkte  
+      updatePoints();
       renderRewards();  
     };  
   </script>  
