@@ -562,6 +562,34 @@
         gap: 10px;  
       }  
     }  
+    /* Schloss-Symbol neben dem Meilenstein-Namen */  
+.milestone-lock {  
+  display: inline-block;  
+  margin-left: 10px;  
+  font-size: 0.9em;  
+}  
+
+/* Standardmäßig Belohnungen verstecken */  
+.milestone-reward {  
+  margin-top: 5px;  
+  color: #4CAF50;  
+  font-style: italic;  
+  display: none;  
+}  
+
+/* Für freigeschaltete Meilensteine */  
+.milestone.unlocked .milestone-reward {  
+  display: block;  
+}  
+
+.milestone.unlocked .milestone-lock {  
+  display: none;  
+}  
+
+/* Optional: Stil für nicht freigeschaltete Meilensteine */  
+.milestone:not(.unlocked) {  
+  opacity: 0.8;  
+}  
   </style>  
 </head>  
 <body>  
@@ -636,31 +664,31 @@
           <div class="milestones">  
             <div class="milestone" data-points="400" id="milestone-1">  
               <div class="milestone-icon">🏆</div>  
-              <div class="milestone-name">FIGURENJÄGER ANFÄNGER</div>  
+              <div class="milestone-name">FIGURENJÄGER ANFÄNGER <span class="milestone-lock">🔒</span></div>  
               <div class="milestone-points">400 Punkte</div>  
             </div>  
             
             <div class="milestone" data-points="600" id="milestone-2">  
               <div class="milestone-icon">🔍</div>  
-              <div class="milestone-name">FORTGESCHRITTENER FIGURENSAMMLER</div>  
+              <div class="milestone-name">FORTGESCHRITTENER FIGURENSAMMLER <span class="milestone-lock">🔒</span></div>  
               <div class="milestone-points">600 Punkte</div>  
             </div>  
             
             <div class="milestone" data-points="800" id="milestone-3">  
               <div class="milestone-icon">🎭</div>  
-              <div class="milestone-name">FIGURENSUCHER MEISTER</div>  
+              <div class="milestone-name">FIGURENSUCHER MEISTER <span class="milestone-lock">🔒</span></div>  
               <div class="milestone-points">800 Punkte</div>  
             </div>  
             
             <div class="milestone" data-points="1000" id="milestone-4">  
               <div class="milestone-icon">👑</div>  
-              <div class="milestone-name">ELITE-FIGURENKENNER</div>  
+              <div class="milestone-name">ELITE-FIGURENKENNER <span class="milestone-lock">🔒</span></div>  
               <div class="milestone-points">1000 Punkte</div>  
             </div>  
             
             <div class="milestone" data-points="1500" id="milestone-5">  
               <div class="milestone-icon">🌟</div>  
-              <div class="milestone-name">GROSSMEISTER DER FIGURENJAGD</div>  
+              <div class="milestone-name">GROSSMEISTER DER FIGURENJAGD <span class="milestone-lock">🔒</span></div>  
               <div class="milestone-points">1500 Punkte</div>  
             </div>  
           </div>  
@@ -987,36 +1015,22 @@
       });  
     }  
     
-    function updatePoints() {  
-      document.getElementById('totalPoints').textContent = totalPoints;  
-      document.getElementById('availablePoints').textContent = availablePoints;  
-      
-      // Update milestone progress  
-      const maxPoints = 1500; // Max points needed  
-      const progressPercentage = Math.min(100, (totalPoints / maxPoints) * 100);  
-      document.getElementById('milestone-progress').style.width = `${progressPercentage}%`;  
-      
-      // Check milestones  
-      let reachedMilestones = [];  
-      let nextMilestone = null;  
-      
-      milestoneData.forEach((milestone, index) => {  
-        const milestoneElement = document.getElementById(`milestone-${milestone.id}`);  
-        
-        if (totalPoints >= milestone.points) {  
-          milestone.reached = true;  
-          milestoneElement.classList.add('reached');  
-          reachedMilestones.push(milestone);  
-        } else {  
-          milestone.reached = false;  
-          milestoneElement.classList.remove('reached');  
-          
-          if (!nextMilestone) {  
-            nextMilestone = milestone;  
-          }  
-        }  
-      });  
-      
+function updatePoints() {  
+  document.getElementById('totalPoints').textContent = totalPoints;  
+  document.getElementById('availablePoints').textContent = availablePoints;  
+  
+  // Aktualisiere Meilensteine  
+  const milestones = document.querySelectorAll('.milestone');  
+  milestones.forEach(milestone => {  
+    const requiredPoints = parseInt(milestone.getAttribute('data-points') || '0');  
+    
+    if (totalPoints >= requiredPoints) {  
+      milestone.classList.add('unlocked');  
+    } else {  
+      milestone.classList.remove('unlocked');  
+    }  
+  });  
+}  
       // Update next milestone  
       updateNextMilestone(nextMilestone);  
       
@@ -1153,6 +1167,10 @@ function updatePointsFromElephants(newTotalPoints, newAvailablePoints) {
   
   updatePoints();  
 }  
+// Initialisiere die Meilensteine beim Laden der Seite  
+document.addEventListener('DOMContentLoaded', function() {  
+  updatePoints(); // Dies wird auch die Meilensteine aktualisieren  
+});  
   </script>  
 </body>  
 </html>
